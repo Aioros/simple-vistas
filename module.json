@@ -1,0 +1,35 @@
+{
+    "id": "aioros-vistas",
+    "name": "aioros-vistas",
+    "title": "Aioros Vistas",
+    "description": "",
+    "version": "0.1.0",
+    "compatibility": {
+        "minimum": "12",
+        "maximum": "12",
+        "verified": "12"
+    },
+    "authors": [
+        {
+            "name": "Aioros",
+            "email": "aioros83@gmail.com",
+            "discord": "MrAioros"
+        }
+    ],
+    "esmodules": [
+        "./scripts/aioros-vistas.js"
+    ],
+    "styles": [
+        "./styles/aioros-vistas.css"
+    ],
+    "languages": [
+        {
+        "lang": "en",
+        "name": "English",
+        "path": "lang/en.json"
+        }
+    ],
+    "url": "",
+    "manifest": "",
+    "download": ""
+}

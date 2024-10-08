@@ -1,0 +1,10 @@
+{
+    "AiorosVistas.IsVista": "Vista",
+    "AiorosVistas.IsVista_Hint": "Make this scene a Vista",
+    "AiorosVistas.ForegroundDistance": "Foreground Distance",
+    "AiorosVistas.ForegroundDistance_Hint": "Foreground Distance",
+    "AiorosVistas.FOV": "Field of View",
+    "AiorosVistas.FOV_Hint": "Field of View",
+    "AiorosVistas.HorizonTop": "Horizon Top %",
+    "AiorosVistas.HorizonTop_Hint": "Horizon Top %"
+}
