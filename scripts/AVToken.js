@@ -4,6 +4,25 @@ import { Constants } from "./constants.js";
 export function AVTokenMixin(Base) {
     return class AVToken extends Base {
 
+        _refreshState() {
+            super._refreshState();
+            const isVista = this.scene.getFlag(Constants.MODULE_ID, "isVista");
+            if (isVista && this instanceof Tile) {
+                this.mesh.sortLayer = PrimaryCanvasGroup.SORT_LAYERS.TOKENS;
+            }
+        }
+
+        async _draw(options={}) {
+            return super._draw(options).then(() => {
+                const isVista = this.scene.getFlag(Constants.MODULE_ID, "isVista");
+                if (isVista && this.frame) {
+                    this.frame.removeChild(this.frame.handle);
+                    this.frame.handle = this.frame.addChild(new ResizeHandle([1, 0]));
+                    this.frame.handle.eventMode = "static";
+                }
+            });
+        }
+
         getCenterPoint(position) {
             const isVista = this.document.parent.getFlag(Constants.MODULE_ID, "isVista");
             if (!isVista) return super.getCenterPoint(position);
@@ -13,7 +32,7 @@ export function AVTokenMixin(Base) {
 
         getBottomCenterPoint() {
             const centerPoint = this.getCenterPoint();
-            return {x: centerPoint.x, y: centerPoint.y + this.document.height * this.scene.grid.size};
+            return {x: centerPoint.x, y: centerPoint.y + this.document.height * this.document.docSizeToPixelsMultiplier};
         }
 
         _getShiftedPosition(dx, dy) {
@@ -21,7 +40,7 @@ export function AVTokenMixin(Base) {
             const isVista = this.document.parent.getFlag(Constants.MODULE_ID, "isVista");
             if (isVista) {
                 const yDiff = result.y - this.document.y;
-                const prevBottomY = this.document.y + this.document.height * this.document.parent.grid.size;
+                const prevBottomY = this.document.y + this.document.height * this.document.docSizeToPixelsMultiplier;
                 const newBottomY = prevBottomY + yDiff;
                 const prevScaleFactor = getScaleFactor(prevBottomY, this.document.parent);
                 const newScaleFactor = getScaleFactor(newBottomY, this.document.parent);
@@ -37,6 +56,8 @@ export function AVTokenMixin(Base) {
         _onDragLeftMove(event) {    
             const isVista = this.scene.getFlag(Constants.MODULE_ID, "isVista");
             if (!isVista) return super._onDragLeftMove(event);
+
+            if ( event.interactionData.dragHandle ) return this._onHandleDragMove(event);
 
             const {destination, clones} = event.interactionData;
             const preview = game.settings.get("core", "tokenDragPreview");
@@ -101,15 +122,15 @@ export function AVTokenDocumentMixin(Base) {
     return class AVTokenDocument extends Base {
 
         get docSizeToPixelsMultiplier() {
-            return TokenDocument.isPrototypeOf(Base) ? this.parent.grid.size : 1
+            return this instanceof TokenDocument ? this.parent.grid.size : 1;
         }
 
         get avBaseWidth() {
-            return this.getFlag(Constants.MODULE_ID, "width") || (TokenDocument.isPrototypeOf(Base) ? this.getFlag(Constants.MODULE_ID, "originalWidth") * Constants.MD_TOKEN_WIDTH : Constants.MD_TILE_WIDTH);
+            return this.getFlag(Constants.MODULE_ID, "width") || (this instanceof TokenDocument ? this.getFlag(Constants.MODULE_ID, "originalWidth") * Constants.MD_TOKEN_WIDTH : Constants.MD_TILE_WIDTH);
         }
 
         get avBaseHeight() {
-            return this.getFlag(Constants.MODULE_ID, "height") || (TokenDocument.isPrototypeOf(Base) ? this.getFlag(Constants.MODULE_ID, "originalHeight") * Constants.MD_TOKEN_HEIGHT: Constants.MD_TILE_HEIGHT);
+            return this.getFlag(Constants.MODULE_ID, "height") || (this instanceof TokenDocument ? this.getFlag(Constants.MODULE_ID, "originalHeight") * Constants.MD_TOKEN_HEIGHT: Constants.MD_TILE_HEIGHT);
         }
 
         get avPixelHeight() {
@@ -125,10 +146,10 @@ export function AVTokenDocumentMixin(Base) {
                 if (isVista) {
                     data.y = Math.max(data.y, this.parent.getFlag(Constants.MODULE_ID, "maxTop") * this.parent.dimensions.sceneHeight + this.parent.dimensions.sceneY);
                     const scaleFactor = getScaleFactor(data.y, this.parent);
-                    const originalWidth = TokenDocument.isPrototypeOf(Base) ? this.width : 1;
-                    const originalHeight = TokenDocument.isPrototypeOf(Base) ? this.height : 1;
-                    const baseWidth = data.flags?.[Constants.MODULE_ID]?.width || (TokenDocument.isPrototypeOf(Base) ? originalWidth * Constants.MD_TOKEN_WIDTH : Constants.MD_TILE_WIDTH);
-                    const baseHeight = data.flags?.[Constants.MODULE_ID]?.height || (TokenDocument.isPrototypeOf(Base) ? originalHeight * Constants.MD_TOKEN_HEIGHT: Constants.MD_TILE_HEIGHT);
+                    const originalWidth = this instanceof TokenDocument ? this.width : 1;
+                    const originalHeight = this instanceof TokenDocument ? this.height : 1;
+                    const baseWidth = data.flags?.[Constants.MODULE_ID]?.width || (this instanceof TokenDocument ? originalWidth * Constants.MD_TOKEN_WIDTH : Constants.MD_TILE_WIDTH);
+                    const baseHeight = data.flags?.[Constants.MODULE_ID]?.height || (this instanceof TokenDocument ? originalHeight * Constants.MD_TOKEN_HEIGHT: Constants.MD_TILE_HEIGHT);
                     const width = baseWidth / Constants.GRID_DISTANCE * (this.parent.grid.size / this.docSizeToPixelsMultiplier) * scaleFactor;
                     const height = baseHeight / Constants.GRID_DISTANCE * (this.parent.grid.size / this.docSizeToPixelsMultiplier) * scaleFactor;
                     const updateData = {
