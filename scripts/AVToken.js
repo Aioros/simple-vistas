@@ -39,6 +39,7 @@ export function AVTokenMixin(Base) {
             let result = super._getShiftedPosition(dx, dy);
             const isVista = this.document.parent.getFlag(Constants.MODULE_ID, "isVista");
             if (isVista) {
+                const xDiff = result.x - this.document.x;
                 const yDiff = result.y - this.document.y;
                 const prevBottomY = this.document.y + this.document.height * this.document.docSizeToPixelsMultiplier;
                 const newBottomY = prevBottomY + yDiff;
@@ -47,6 +48,7 @@ export function AVTokenMixin(Base) {
                 const newHeight = this.document.avBaseHeight / Constants.GRID_DISTANCE * this.document.parent.grid.size * newScaleFactor;
                 const newTopY = newBottomY - newHeight;
                 const adjustedYDiff = newTopY - this.document.y;
+                result.x = this.document.x + xDiff * prevScaleFactor;
                 result.y = this.document.y + adjustedYDiff * prevScaleFactor;
                 result.scaleFactor = newScaleFactor;
             }
@@ -140,6 +142,18 @@ export function AVTokenDocumentMixin(Base) {
             return this.width * this.docSizeToPixelsMultiplier;
         }
 
+        get avParallaxOffset() {
+            return this.getParallaxOffset(this.y + this.avPixelHeight);
+        }
+
+        getParallaxOffset(bottomY) {
+            const r = canvas.dimensions.rect;
+            const initialPosition = {x: r.right / 2};
+            const offsetX = canvas.scene._viewPosition.x - initialPosition.x;
+            const scaleFactor = getScaleFactor(bottomY, this.parent);
+            return offsetX * (scaleFactor - 1);
+        }
+
         async _preCreate(data, options, user) {
             if ( user.id === game.user.id ) {
                 const isVista = this.parent.getFlag(Constants.MODULE_ID, "isVista");
@@ -177,10 +191,10 @@ export function AVTokenDocumentMixin(Base) {
             if ( user.id === game.user.id ) {
                 const isVista = this.parent.getFlag(Constants.MODULE_ID, "isVista");
                 if (isVista) {
-                    if (changed.hasOwnProperty("y")) {
+                    if (changed.hasOwnProperty("y") && changed.y != this.y || changed.hasOwnProperty("scaleFactor")) {
                         const originalSize = {
-                            width: this.avBaseWidth / Constants.GRID_DISTANCE,
-                            height: this.avBaseHeight / Constants.GRID_DISTANCE
+                            width: (changed.flags?.[Constants.MODULE_ID]?.width || this.avBaseWidth) / Constants.GRID_DISTANCE,
+                            height: (changed.flags?.[Constants.MODULE_ID]?.height || this.avBaseHeight) / Constants.GRID_DISTANCE
                         };
                         const minY = this.parent.getFlag(Constants.MODULE_ID, "maxTop") * this.parent.dimensions.sceneHeight + this.parent.dimensions.sceneY;
                         let scaleFactor, newBottomY;
@@ -199,14 +213,41 @@ export function AVTokenDocumentMixin(Base) {
                         changed.width = width;
                         changed.height = height;
                         changed.sort = sort;
+                    } else if (changed.flags?.[Constants.MODULE_ID]?.height) {
+                        const currentScaleFactor = getScaleFactor(this.y + this.avPixelHeight, this.parent);
+                        const currentBaseWidth = this.avPixelWidth / this.parent.grid.size * Constants.GRID_DISTANCE / currentScaleFactor;
+                        const currentBaseHeight = this.avPixelHeight / this.parent.grid.size * Constants.GRID_DISTANCE / currentScaleFactor;                        
+                        const transitionScaleFactorWidth = changed.flags?.[Constants.MODULE_ID]?.width / currentBaseWidth;
+                        const transitionScaleFactorHeight = changed.flags?.[Constants.MODULE_ID]?.height / currentBaseHeight;
+                        changed.width = transitionScaleFactorWidth * this.width;
+                        changed.height = transitionScaleFactorHeight * this.height;
+                        changed.y = this.y - (transitionScaleFactorHeight - 1) * this.avPixelHeight;
                     }
-                    if (changed.hasOwnProperty("elevation")) {
+                    if (changed.hasOwnProperty("elevation") && changed.elevation != this.elevation) {
                         foundry.utils.mergeObject(changed, {texture: {anchorY: 0.5 + changed.elevation / (this.height * (this.docSizeToPixelsMultiplier / this.parent.grid.size) * Constants.GRID_DISTANCE)}});
+                    }
+                    if (changed.hasOwnProperty("x") && changed.x != this.x) {
+                        // we store the x as if the view was centered, each client will add their own offset
+                        const parallaxOffset = this.getParallaxOffset(changed.y + changed.height * this.parent.grid.size);
+                        changed.x -= parallaxOffset;
                     }
                 }
             }
 
             return super._preUpdate(changed, options, user);
+        }
+
+        _onUpdate(changed, options, userId) {
+            this.x = changed.x + this.avParallaxOffset;
+            this.object.animate(this);
+        }
+
+        _updateParallax() {
+            const isVista = this.parent.getFlag(Constants.MODULE_ID, "isVista");
+            if (isVista && this.avParallaxOffset != 0) {
+                this.x = this._source.x + this.avParallaxOffset;
+                this.object._refreshPosition();
+            }
         }
     }
 }

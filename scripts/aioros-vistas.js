@@ -112,7 +112,6 @@ Hooks.on("preUpdateScene", (scene, data) => {
         if (isVista) {
             data.flags[Constants.MODULE_ID].horizonTop ||= 0;
             data.flags[Constants.MODULE_ID].maxTop = Math.max(parseFloat(data.flags[Constants.MODULE_ID].horizonTop) + 0.01, data.flags[Constants.MODULE_ID].maxTop || 0);
-            // probably also global illumination, no vision
             // check _repositionObjects
             // disable a bunch of controls unless adapted
             // I'm thinking of a "grid square" being 1/2ft
@@ -120,6 +119,7 @@ Hooks.on("preUpdateScene", (scene, data) => {
             data.grid.type = 0;
             data.grid.distance = Constants.GRID_DISTANCE;
             data.grid.size = Math.round(data.width / foregroundWidth * Constants.GRID_DISTANCE);
+            data.tokenVision = false;
         }
     }
 });
@@ -127,6 +127,14 @@ Hooks.on("preUpdateScene", (scene, data) => {
 Hooks.on("updateScene", (scene) => {
     if (scene.flags[Constants.MODULE_ID].isVista) {
         canvas.draw();
+    }
+});
+
+Hooks.on("canvasPan", (canvas, position) => {
+    const isVista = canvas.scene.flags[Constants.MODULE_ID].isVista;
+    if (isVista) {
+        [...canvas.scene.tokens, ...canvas.scene.tiles].forEach(t => t._updateParallax());
+        canvas.avcontrols.draw();
     }
 });
 

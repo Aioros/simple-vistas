@@ -14,19 +14,24 @@ export class AVControlsLayer extends InteractionLayer {
         this.controls.visible = this.interactiveChildren = isToggled;
     }
 
-    async _draw(options) {
+    async _draw(options = {}) {
         await super._draw(options);
 
         this.controls = this.addChild(new AVControl());
         this.controls.visible = this.active;
-        this.controls.draw();
+        this.controls.draw(options);
     }
 }
 
 export class AVControl extends PIXI.Container {
 
-    draw() {
+    draw(options = {}) {
         if (canvas.scene.getFlag(Constants.MODULE_ID, "isVista")) {
+            //const offsetX = options.offsetX || 0;
+            const r = canvas.dimensions.rect;
+            const initialPosition = {x: r.right / 2};
+            const offsetX = canvas.scene._viewPosition.x - initialPosition.x;
+
             const horizonTop = canvas.scene.getFlag(Constants.MODULE_ID, "horizonTop") *  canvas.scene.dimensions.sceneHeight + canvas.scene.dimensions.sceneY;
             const maxTop = canvas.scene.getFlag(Constants.MODULE_ID, "maxTop") *  canvas.scene.dimensions.sceneHeight + canvas.scene.dimensions.sceneY;
 
@@ -38,7 +43,7 @@ export class AVControl extends PIXI.Container {
 
             this.horizonCenter = new PIXI.Graphics();
             this.horizonCenter.beginFill(0xff3300);
-            this.horizonCenter.drawRect(canvas.scene.dimensions.width / 2 - 15, horizonTop - 15, 30, 30);
+            this.horizonCenter.drawRect(canvas.scene.dimensions.width / 2 - 15 - offsetX, horizonTop - 15, 30, 30);
             this.horizonCenter.endFill();
             this.addChild(this.horizonCenter);
 
@@ -50,7 +55,7 @@ export class AVControl extends PIXI.Container {
 
             this.maxCenter = new PIXI.Graphics();
             this.maxCenter.beginFill(0xffd900);
-            this.maxCenter.drawRect(canvas.scene.dimensions.width / 2 - 15, maxTop - 15, 30, 30);
+            this.maxCenter.drawRect(canvas.scene.dimensions.width / 2 - 15 - offsetX, maxTop - 15, 30, 30);
             this.maxCenter.endFill();
             this.addChild(this.maxCenter);
 
@@ -59,7 +64,7 @@ export class AVControl extends PIXI.Container {
                 const cornerY = corner[1] * canvas.scene.dimensions.sceneHeight + canvas.scene.dimensions.sceneY;
                 const ray = new PIXI.Graphics();
                 ray.lineStyle(1, 0x00ffd9, 0.7);
-                ray.moveTo(canvas.scene.dimensions.width / 2, horizonTop);
+                ray.moveTo(canvas.scene.dimensions.width / 2 - offsetX, horizonTop);
                 ray.lineTo(cornerX, cornerY);
                 this.addChild(ray);
             });
