@@ -12,6 +12,17 @@ export function AVTokenMixin(Base) {
             }
         }
 
+        _refreshPosition() {
+            const isVista = this.scene.getFlag(Constants.MODULE_ID, "isVista");
+            if (!isVista || !this.mesh || this._original) return super._refreshPosition();
+            const {x, y} = this.document;
+            if ( (this.position.x !== x) || (this.position.y !== y) ) MouseInteractionManager.emulateMoveEvent();
+            this.position.set(x + this.document.avParallaxOffset, y);
+            if (this.mesh) {
+                this.mesh.position = this.getCenterPoint(this.position);
+            }
+        }
+
         async _draw(options={}) {
             return super._draw(options).then(() => {
                 const isVista = this.scene.getFlag(Constants.MODULE_ID, "isVista");
@@ -236,19 +247,7 @@ export function AVTokenDocumentMixin(Base) {
 
             return super._preUpdate(changed, options, user);
         }
-
-        _onUpdate(changed, options, userId) {
-            this.x = changed.x + this.avParallaxOffset;
-            this.object.animate(this);
-        }
-
-        _updateParallax() {
-            const isVista = this.parent.getFlag(Constants.MODULE_ID, "isVista");
-            if (isVista && this.avParallaxOffset != 0) {
-                this.x = this._source.x + this.avParallaxOffset;
-                this.object._refreshPosition();
-            }
-        }
+        
     }
 }
 

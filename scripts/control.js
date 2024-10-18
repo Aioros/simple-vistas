@@ -21,53 +21,67 @@ export class AVControlsLayer extends InteractionLayer {
         this.controls.visible = this.active;
         this.controls.draw(options);
     }
+
 }
 
 export class AVControl extends PIXI.Container {
 
+    constructor() {
+        super();
+        this.horizon = this.addChild(new PIXI.Container());
+        this.maxTop = this.addChild(new PIXI.Container());
+        this.rays = this.addChild(new PIXI.Container());
+    }
+
+    drawHorizons() {
+        const r = canvas.dimensions.rect;
+        const initialPosition = {x: r.right / 2};
+        const offsetX = canvas.scene._viewPosition.x - initialPosition.x;
+        const horizonTop = canvas.scene.getFlag(Constants.MODULE_ID, "horizonTop") *  canvas.scene.dimensions.sceneHeight + canvas.scene.dimensions.sceneY;
+        const maxTop = canvas.scene.getFlag(Constants.MODULE_ID, "maxTop") *  canvas.scene.dimensions.sceneHeight + canvas.scene.dimensions.sceneY;
+
+        this.horizon.removeChildren();
+        this.horizon.line = this.horizon.addChild(new PIXI.Graphics());
+        this.horizon.line.lineStyle(2, 0xff3300, 1);
+        this.horizon.line.moveTo(0, horizonTop);
+        this.horizon.line.lineTo(canvas.scene.dimensions.width, horizonTop);
+        this.horizon.centerRect = this.horizon.addChild(new PIXI.Graphics());
+        this.horizon.centerRect.beginFill(0xff3300);
+        this.horizon.centerRect.drawRect(canvas.scene.dimensions.width / 2 - 15 - offsetX, horizonTop - 15, 30, 30);
+        this.horizon.centerRect.endFill();
+
+        this.maxTop.removeChildren();
+        this.maxTop.line = this.horizon.addChild(new PIXI.Graphics());
+        this.maxTop.line.lineStyle(1, 0xffd900, 1);
+        this.maxTop.line.moveTo(0, maxTop);
+        this.maxTop.line.lineTo(canvas.scene.dimensions.width, maxTop);
+        this.maxTop.centerRect = this.horizon.addChild(new PIXI.Graphics());
+        this.maxTop.centerRect.beginFill(0xffd900);
+        this.maxTop.centerRect.drawRect(canvas.scene.dimensions.width / 2 - 15 - offsetX, maxTop - 15, 30, 30);
+        this.maxTop.centerRect.endFill();
+    }
+
+    drawRays() {
+        this.rays.removeChildren();
+        const r = canvas.dimensions.rect;
+        const initialPosition = {x: r.right / 2};
+        const offsetX = canvas.scene._viewPosition.x - initialPosition.x;
+        const horizonTop = canvas.scene.getFlag(Constants.MODULE_ID, "horizonTop") *  canvas.scene.dimensions.sceneHeight + canvas.scene.dimensions.sceneY;
+        [[0, 0], [0, 1], [1, 0], [1, 1]].forEach(corner => {
+            const cornerX = corner[0] * canvas.scene.dimensions.sceneWidth + canvas.scene.dimensions.sceneX;
+            const cornerY = corner[1] * canvas.scene.dimensions.sceneHeight + canvas.scene.dimensions.sceneY;
+            const ray = new PIXI.Graphics();
+            ray.lineStyle(1, 0x00ffd9, 0.7);
+            ray.moveTo(canvas.scene.dimensions.width / 2 - offsetX, horizonTop);
+            ray.lineTo(cornerX, cornerY);
+            this.rays.addChild(ray);
+        });
+    }
+
     draw(options = {}) {
         if (canvas.scene.getFlag(Constants.MODULE_ID, "isVista")) {
-            //const offsetX = options.offsetX || 0;
-            const r = canvas.dimensions.rect;
-            const initialPosition = {x: r.right / 2};
-            const offsetX = canvas.scene._viewPosition.x - initialPosition.x;
-
-            const horizonTop = canvas.scene.getFlag(Constants.MODULE_ID, "horizonTop") *  canvas.scene.dimensions.sceneHeight + canvas.scene.dimensions.sceneY;
-            const maxTop = canvas.scene.getFlag(Constants.MODULE_ID, "maxTop") *  canvas.scene.dimensions.sceneHeight + canvas.scene.dimensions.sceneY;
-
-            this.horizon = new PIXI.Graphics();
-            this.horizon.lineStyle(2, 0xff3300, 1);
-            this.horizon.moveTo(0, horizonTop);
-            this.horizon.lineTo(canvas.scene.dimensions.width, horizonTop);
-            this.addChild(this.horizon);
-
-            this.horizonCenter = new PIXI.Graphics();
-            this.horizonCenter.beginFill(0xff3300);
-            this.horizonCenter.drawRect(canvas.scene.dimensions.width / 2 - 15 - offsetX, horizonTop - 15, 30, 30);
-            this.horizonCenter.endFill();
-            this.addChild(this.horizonCenter);
-
-            this.max = new PIXI.Graphics();
-            this.max.lineStyle(1, 0xffd900, 1);
-            this.max.moveTo(0, maxTop);
-            this.max.lineTo(canvas.scene.dimensions.width, maxTop);
-            this.addChild(this.max);
-
-            this.maxCenter = new PIXI.Graphics();
-            this.maxCenter.beginFill(0xffd900);
-            this.maxCenter.drawRect(canvas.scene.dimensions.width / 2 - 15 - offsetX, maxTop - 15, 30, 30);
-            this.maxCenter.endFill();
-            this.addChild(this.maxCenter);
-
-            [[0, 0], [0, 1], [1, 0], [1, 1]].forEach(corner => {
-                const cornerX = corner[0] * canvas.scene.dimensions.sceneWidth + canvas.scene.dimensions.sceneX;
-                const cornerY = corner[1] * canvas.scene.dimensions.sceneHeight + canvas.scene.dimensions.sceneY;
-                const ray = new PIXI.Graphics();
-                ray.lineStyle(1, 0x00ffd9, 0.7);
-                ray.moveTo(canvas.scene.dimensions.width / 2 - offsetX, horizonTop);
-                ray.lineTo(cornerX, cornerY);
-                this.addChild(ray);
-            });
+            this.drawHorizons();
+            this.drawRays();
         }
 
         const isToggled = game.settings.get(Constants.MODULE_ID, "toggleVistaControls");

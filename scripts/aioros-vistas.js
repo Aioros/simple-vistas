@@ -130,13 +130,16 @@ Hooks.on("updateScene", (scene) => {
     }
 });
 
-Hooks.on("canvasPan", (canvas, position) => {
-    const isVista = canvas.scene.flags[Constants.MODULE_ID].isVista;
-    if (isVista) {
-        [...canvas.scene.tokens, ...canvas.scene.tiles].forEach(t => t._updateParallax());
-        canvas.avcontrols.draw();
-    }
+Hooks.once("canvasReady", () => {
+    Hooks.on("canvasPan", (canvas, position) => {
+        const isVista = canvas.scene.flags[Constants.MODULE_ID].isVista;
+        if (isVista) {
+            [...canvas.scene.tokens, ...canvas.scene.tiles].forEach(t => t.object._refreshPosition());
+            canvas.avcontrols.controls.draw();
+        }
+    });
 });
+
 
 Hooks.on("renderTokenConfig", renderAVPlaceableConfig);
 Hooks.on("renderTileConfig", renderAVPlaceableConfig);
