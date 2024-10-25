@@ -1,14 +1,15 @@
-import { AVTokenMixin, AVTokenDocumentMixin, AVTokenHUDMixin } from "./AVToken.js";
-import { AVControlsLayer, AVControl } from "./control.js";
+import { AVPlaceableMixin, AVPlaceableDocumentMixin, AVPlaceableHUDMixin } from "./AVPlaceable.js";
+import { AVControlsLayer } from "./control.js";
+import { AVTilesLayerMixin } from "./tileslayer.js";
 import { Constants } from "./constants.js";
 
 const defaultFlags = {
     scene: {
         isVista: false,
-        fov: 90,
-        foregroundDistance: 10,
+        foregroundWidth: 20,
         horizonTop: 0.6,
         maxTop: 0.7,
+        parallax: 0.2,
     },
     placeable: {
         //width: 0,
@@ -17,14 +18,15 @@ const defaultFlags = {
 };
 
 Hooks.on("init", () => {
-    CONFIG.Token.documentClass = AVTokenDocumentMixin(CONFIG.Token.documentClass);
-    CONFIG.Token.objectClass = AVTokenMixin(CONFIG.Token.objectClass);
+    CONFIG.Token.documentClass = AVPlaceableDocumentMixin(CONFIG.Token.documentClass);
+    CONFIG.Token.objectClass = AVPlaceableMixin(CONFIG.Token.objectClass);
 
-    CONFIG.Tile.documentClass = AVTokenDocumentMixin(CONFIG.Tile.documentClass);
-    CONFIG.Tile.objectClass = AVTokenMixin(CONFIG.Tile.objectClass);
+    CONFIG.Tile.documentClass = AVPlaceableDocumentMixin(CONFIG.Tile.documentClass);
+    CONFIG.Tile.objectClass = AVPlaceableMixin(CONFIG.Tile.objectClass);
 
-    CONFIG.Token.hudClass = AVTokenHUDMixin(CONFIG.Token.hudClass);
-    CONFIG.Tile.hudClass = AVTokenHUDMixin(CONFIG.Tile.hudClass);
+    CONFIG.Token.hudClass = AVPlaceableHUDMixin(CONFIG.Token.hudClass);
+    CONFIG.Tile.hudClass = AVPlaceableHUDMixin(CONFIG.Tile.hudClass);
+    CONFIG.Canvas.layers.tiles.layerClass = AVTilesLayerMixin(CONFIG.Canvas.layers.tiles.layerClass);
     CONFIG.Canvas.layers.avcontrols = { layerClass: AVControlsLayer, group: "interface" };
 
     game.settings.register(Constants.MODULE_ID, "toggleVistaControls", {
@@ -82,14 +84,9 @@ Hooks.on("renderSceneConfig", (app, html) => {
             <p class="notes">${game.i18n.localize("AiorosVistas.IsVista_Hint")}</p>
         </div>
         <div class="form-group">
-            <label>${game.i18n.localize("AiorosVistas.FOV")}</label>
-            <input type="number" name="flags.${Constants.MODULE_ID}.fov" data-dtype="Number" min="0" max="120" value="${flags.fov || defaultFlags.scene.fov}">
-            <p class="notes">${game.i18n.localize("AiorosVistas.FOV_Hint")}</p>
-        </div>
-        <div class="form-group">
-            <label>${game.i18n.localize("AiorosVistas.ForegroundDistance")}</label>
-            <input type="number" name="flags.${Constants.MODULE_ID}.foregroundDistance" data-dtype="Number" value="${flags.foregroundDistance || defaultFlags.scene.foregroundDistance}">
-            <p class="notes">${game.i18n.localize("AiorosVistas.ForegroundDistance_Hint")}</p>
+            <label>${game.i18n.localize("AiorosVistas.ForegroundWidth")}</label>
+            <input type="number" name="flags.${Constants.MODULE_ID}.foregroundWidth" data-dtype="Number" value="${flags.foregroundWidth || defaultFlags.scene.foregroundWidth}">
+            <p class="notes">${game.i18n.localize("AiorosVistas.ForegroundWidth_Hint")}</p>
         </div>
         <div class="form-group">
             <label>${game.i18n.localize("AiorosVistas.HorizonTop")}</label>
@@ -101,45 +98,65 @@ Hooks.on("renderSceneConfig", (app, html) => {
             <input type="number" name="flags.${Constants.MODULE_ID}.maxTop" data-dtype="Number" min="0" max="1" step="0.01" value="${flags.maxTop || defaultFlags.scene.maxTop}">
             <p class="notes">${game.i18n.localize("AiorosVistas.MaxTop_Hint")}</p>
         </div>
+        <div class="form-group">
+            <label>${game.i18n.localize("AiorosVistas.ParallaxStrength")}</label>
+            <div class="form-fields">
+                <range-picker name="flags.${Constants.MODULE_ID}.parallax" value="${flags.parallax || defaultFlags.scene.parallax}" min="0" max="1" step="0.05">
+                    <input type="range" min="0" max="1" step="0.05"><input type="number" min="0" max="1" step="0.05">
+                </range-picker>
+            </div>
+            <p class="notes">${game.i18n.localize("AiorosVistas.ParallaxStrength_Hint")}</p>
+        </div>
     </div>`;
     html.find(".sheet-tabs:not(.secondary-tabs)").find(".item").last().after(tab);
     html.find(".sheet-tabs:not(.secondary-tabs)").after(contents);
 });
 
-Hooks.on("preUpdateScene", (scene, data) => {
-    if (data.flags[Constants.MODULE_ID]) {
-        const isVista = data.flags[Constants.MODULE_ID].isVista;
+Hooks.on("preUpdateScene", (scene, data, options) => {
+    if (data.flags?.[Constants.MODULE_ID]) {
+        const isVista = data.flags[Constants.MODULE_ID].isVista || scene.getFlag(Constants.MODULE_ID, "isVista");
         if (isVista) {
-            data.flags[Constants.MODULE_ID].horizonTop ||= 0;
-            data.flags[Constants.MODULE_ID].maxTop = Math.max(parseFloat(data.flags[Constants.MODULE_ID].horizonTop) + 0.01, data.flags[Constants.MODULE_ID].maxTop || 0);
+            options.autoReposition = true;
+            data.flags[Constants.MODULE_ID].horizonTop ||= scene.getFlag(Constants.MODULE_ID, "horizonTop");
+            data.flags[Constants.MODULE_ID].maxTop ||= scene.getFlag(Constants.MODULE_ID, "maxTop");
+            data.flags[Constants.MODULE_ID].maxTop = Math.max(parseFloat(data.flags[Constants.MODULE_ID].horizonTop) + 0.01, data.flags[Constants.MODULE_ID].maxTop);
+            data.flags[Constants.MODULE_ID].horizonTop = Math.round(data.flags[Constants.MODULE_ID].horizonTop * 100) / 100;
+            data.flags[Constants.MODULE_ID].maxTop = Math.round(data.flags[Constants.MODULE_ID].maxTop * 100) / 100;
             // check _repositionObjects
             // disable a bunch of controls unless adapted
-            // I'm thinking of a "grid square" being 1/2ft
-            const foregroundWidth = 2 * data.flags[Constants.MODULE_ID].foregroundDistance * Math.tan(data.flags[Constants.MODULE_ID].fov/2*Math.PI/180);
-            data.grid.type = 0;
-            data.grid.distance = Constants.GRID_DISTANCE;
-            data.grid.size = Math.round(data.width / foregroundWidth * Constants.GRID_DISTANCE);
-            data.tokenVision = false;
+            if (data.grid) {
+                const foregroundWidth = data.flags[Constants.MODULE_ID].foregroundWidth;
+                data.grid.type = 0;
+                data.grid.distance = Constants.GRID_DISTANCE;
+                data.grid.size = Math.round(data.width / foregroundWidth * Constants.GRID_DISTANCE);
+                data.tokenVision = false;
+            }
         }
     }
 });
 
 Hooks.on("updateScene", (scene) => {
     if (scene.flags[Constants.MODULE_ID].isVista) {
-        canvas.draw();
+        canvas.avcontrols.draw();
     }
 });
 
 Hooks.once("canvasReady", () => {
+    const initialBackgroundX = canvas.primary.background.x;
     Hooks.on("canvasPan", (canvas, position) => {
-        const isVista = canvas.scene.flags[Constants.MODULE_ID].isVista;
-        if (isVista) {
-            [...canvas.scene.tokens, ...canvas.scene.tiles].forEach(t => t.object._refreshPosition());
-            canvas.avcontrols.controls.draw();
+        const isVista = canvas.scene.getFlag(Constants.MODULE_ID, "isVista");
+        if (isVista ) {
+            const r = canvas.dimensions.rect;
+            const initialPosition = {x: r.right / 2};
+            const offsetX = position.x - initialPosition.x;
+            if (offsetX != 0) {
+                [...canvas.scene.tokens, ...canvas.scene.tiles].filter(t => t.object).forEach(t => t.object._refreshPosition());
+                canvas.avcontrols.controls.draw();
+                canvas.primary.background.x = initialBackgroundX - offsetX * canvas.scene.getFlag(Constants.MODULE_ID, "parallax");
+            }
         }
     });
 });
-
 
 Hooks.on("renderTokenConfig", renderAVPlaceableConfig);
 Hooks.on("renderTileConfig", renderAVPlaceableConfig);

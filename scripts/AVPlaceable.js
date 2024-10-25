@@ -1,9 +1,8 @@
 import { getScaleFactor, getScaleFactorByTopY } from "./utils.js";
 import { Constants } from "./constants.js";
 
-export function AVTokenMixin(Base) {
-    return class AVToken extends Base {
-
+export function AVPlaceableMixin(Base) {
+    return class AVPlaceable extends Base {
         _refreshState() {
             super._refreshState();
             const isVista = this.scene.getFlag(Constants.MODULE_ID, "isVista");
@@ -44,6 +43,15 @@ export function AVTokenMixin(Base) {
         getBottomCenterPoint() {
             const centerPoint = this.getCenterPoint();
             return {x: centerPoint.x, y: centerPoint.y + this.document.height * this.document.docSizeToPixelsMultiplier};
+        }
+
+        _updateScale({delta=0, snap=0}={}) {
+            const avFlags = this.document.flags[Constants.MODULE_ID];
+            const ratio = avFlags.width / avFlags.height;
+            let width = avFlags.width + delta;
+            if ( snap > 0 ) width = width.toNearest(snap);
+            let height = width / ratio;
+            return { width, height };
         }
 
         _getShiftedPosition(dx, dy) {
@@ -105,13 +113,68 @@ export function AVTokenMixin(Base) {
                 
                 c.document.x = position.x;
                 c.document.y = position.y;
-                c.document.sort = position.y;
+                c.document.sort = position.y + c.document.avPixelHeight;
                 c.renderFlags.set({refreshPosition: true});
                 
                 c.draw();
 
                 if ( preview ) c.initializeSources();
             }
+        }
+
+        _onHandleDragMove(event) {
+            canvas._onDragCanvasPan(event);
+            const interaction = event.interactionData;
+            const d = this._getResizedDimensions(event);
+            this.document.x = d.x;
+            this.document.y = d.y;
+            this.document.width = d.width;
+            this.document.height = d.height;
+            this.document.rotation = 0;
+        
+            // Mirror horizontally or vertically
+            this.document.texture.scaleX = d.sx;
+            this.document.texture.scaleY = d.sy;
+            this.renderFlags.set({refreshTransform: true});
+        }
+
+        _onHandleDragDrop(event) {
+            const interaction = event.interactionData;
+            interaction.resetDocument = false;
+            const d = this._getResizedDimensions(event);
+            const scaleFactor = getScaleFactor(d.y + d.height, this.document.parent);
+            this.document.update({
+                flags: {
+                    [Constants.MODULE_ID]: {
+                        width: d.width * this.document.docSizeToPixelsMultiplier / this.document.parent.grid.size * Constants.GRID_DISTANCE / scaleFactor,
+                        height: d.height * this.document.docSizeToPixelsMultiplier / this.document.parent.grid.size * Constants.GRID_DISTANCE / scaleFactor
+                    }
+                }
+            }).then(() => this.renderFlags.set({refreshTransform: true}));
+        }
+
+        _getResizedDimensions(event) {
+            const o = this.document._source;
+            const {origin, destination} = event.interactionData;
+        
+            // Identify the new width and height as positive dimensions
+            const dx = destination.x - origin.x;
+            const dy = destination.y - origin.y;
+            let w = Math.abs(o.width) + dx;
+            let h = Math.abs(o.height) - dy;
+        
+            // Constrain the aspect ratio using the ALT key
+            if ( event.altKey && this.texture?.valid ) {
+                const ar = this.texture.width / this.texture.height;
+                if ( Math.abs(w) > Math.abs(h) ) h = w / ar;
+                else w = h * ar;
+            }
+            const {x, y, width, height} = new PIXI.Rectangle(o.x, destination.y, w, h).normalize();
+        
+            // Comparing destination coord and source coord to apply mirroring and append to nr
+            const sx = (Math.sign(destination.x - o.x) || 1) * o.texture.scaleX;
+            const sy = (Math.sign(o.y + o.height - destination.y) || 1) * o.texture.scaleY;
+            return {x, y, width, height, sx, sy};
         }
 
         _prepareDragLeftDropUpdates(event) {
@@ -131,8 +194,8 @@ export function AVTokenMixin(Base) {
     }
 }
 
-export function AVTokenDocumentMixin(Base) {
-    return class AVTokenDocument extends Base {
+export function AVPlaceableDocumentMixin(Base) {
+    return class AVPlaceableDocument extends Base {
 
         get docSizeToPixelsMultiplier() {
             return this instanceof TokenDocument ? this.parent.grid.size : 1;
@@ -162,19 +225,20 @@ export function AVTokenDocumentMixin(Base) {
             const initialPosition = {x: r.right / 2};
             const offsetX = canvas.scene._viewPosition.x - initialPosition.x;
             const scaleFactor = getScaleFactor(bottomY, this.parent);
-            return offsetX * (scaleFactor - 1);
+            return offsetX * (scaleFactor - 1) * this.parent.getFlag(Constants.MODULE_ID, "parallax");
         }
 
         async _preCreate(data, options, user) {
             if ( user.id === game.user.id ) {
                 const isVista = this.parent.getFlag(Constants.MODULE_ID, "isVista");
                 if (isVista) {
+                    data.y += data.height / 2;
                     data.y = Math.max(data.y, this.parent.getFlag(Constants.MODULE_ID, "maxTop") * this.parent.dimensions.sceneHeight + this.parent.dimensions.sceneY);
                     const scaleFactor = getScaleFactor(data.y, this.parent);
                     const originalWidth = this instanceof TokenDocument ? this.width : 1;
                     const originalHeight = this instanceof TokenDocument ? this.height : 1;
                     const baseWidth = data.flags?.[Constants.MODULE_ID]?.width || (this instanceof TokenDocument ? originalWidth * Constants.MD_TOKEN_WIDTH : Constants.MD_TILE_WIDTH);
-                    const baseHeight = data.flags?.[Constants.MODULE_ID]?.height || (this instanceof TokenDocument ? originalHeight * Constants.MD_TOKEN_HEIGHT: Constants.MD_TILE_HEIGHT);
+                    const baseHeight = data.flags?.[Constants.MODULE_ID]?.height || (this instanceof TokenDocument ? originalHeight * Constants.MD_TOKEN_HEIGHT: data.height / data.width * baseWidth);
                     const width = baseWidth / Constants.GRID_DISTANCE * (this.parent.grid.size / this.docSizeToPixelsMultiplier) * scaleFactor;
                     const height = baseHeight / Constants.GRID_DISTANCE * (this.parent.grid.size / this.docSizeToPixelsMultiplier) * scaleFactor;
                     const updateData = {
@@ -185,7 +249,7 @@ export function AVTokenDocumentMixin(Base) {
                         flags: {
                             [Constants.MODULE_ID]: { originalWidth: originalWidth, originalHeight: originalHeight }
                         },
-                        sort: this.y - height * this.docSizeToPixelsMultiplier
+                        sort: this.y + height * this.docSizeToPixelsMultiplier
                     };
                     if (this.actor?.img) {
                         updateData.texture = { src: this.actor.img };
@@ -233,33 +297,40 @@ export function AVTokenDocumentMixin(Base) {
                         changed.width = transitionScaleFactorWidth * this.width;
                         changed.height = transitionScaleFactorHeight * this.height;
                         changed.y = this.y - (transitionScaleFactorHeight - 1) * this.avPixelHeight;
+                        changed.sort = changed.y + changed.height * this.docSizeToPixelsMultiplier;
                     }
                     if (changed.hasOwnProperty("elevation") && changed.elevation != this.elevation) {
                         foundry.utils.mergeObject(changed, {texture: {anchorY: 0.5 + changed.elevation / (this.height * (this.docSizeToPixelsMultiplier / this.parent.grid.size) * Constants.GRID_DISTANCE)}});
                     }
                     if (changed.hasOwnProperty("x") && changed.x != this.x) {
                         // we store the x as if the view was centered, each client will add their own offset
-                        const parallaxOffset = this.getParallaxOffset(changed.y + changed.height * this.parent.grid.size);
+                        const parallaxOffset = this.getParallaxOffset(changed.y + changed.height * this.docSizeToPixelsMultiplier);
                         changed.x -= parallaxOffset;
+                    }
+                    if (changed.flags?.[Constants.MODULE_ID]?.width) {
+                        changed.flags[Constants.MODULE_ID].width = Math.round(changed.flags[Constants.MODULE_ID].width * 100) / 100;
+                    }
+                    if (changed.flags?.[Constants.MODULE_ID]?.height) {
+                        changed.flags[Constants.MODULE_ID].height = Math.round(changed.flags[Constants.MODULE_ID].height * 100) / 100;
                     }
                 }
             }
 
             return super._preUpdate(changed, options, user);
         }
-        
+
     }
 }
 
-export function AVTokenHUDMixin(Base) {
-    return class AVTokenHUD extends Base {
+export function AVPlaceableHUDMixin(Base) {
+    return class AVPlaceableHUD extends Base {
 
         setPosition(_position) {
             const isVista = this.document.parent.getFlag(Constants.MODULE_ID, "isVista");
             if (!isVista) return super.setPosition(_position);
             const b = this.object.bounds;
             const {width, height} = this.document;
-            const ratio = 1.5;
+            const ratio = 1.0;
             const position = {width: width * canvas.dimensions.size / ratio, height: height * canvas.dimensions.size / ratio, left: b.left, top: b.top};
             position.transform = `scale(${ratio})`;
             this.element.css(position);
