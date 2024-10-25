@@ -1,7 +1,18 @@
-import { AVPlaceableMixin, AVPlaceableDocumentMixin, AVPlaceableHUDMixin } from "./AVPlaceable.js";
-import { AVControlsLayer } from "./control.js";
-import { AVTilesLayerMixin } from "./tileslayer.js";
+import { SVPlaceableMixin, SVPlaceableDocumentMixin, SVPlaceableHUDMixin } from "./SVPlaceable.js";
+import { SVControlsLayer } from "./SVControl.js";
+import { SVTilesLayerMixin } from "./SVTilesLayer.js";
 import { Constants } from "./constants.js";
+
+/*** Default values for module flags ***
+ * Scene Flags:
+ * * isVista: boolean - whether the scene is a Vista
+ * * foregroundWidth: number - width of the scene at its closest point (in feet)
+ * * horizonTop: number (0 to 1) - y-position of the horizon, expressed as fraction of the scene height from the top
+ * * maxTop: number (0 to 1) - highest (well, actually minimum) y-position of a placeable, expressed as fraction of the scene height from the top
+ * * parallax: number (0 to 1) - strength of the parallax effect on horizontal pan
+ * Placeable Flags:
+ * * width, height: number - dimensions (in ft) of the object in Vista scenes
+ ***/
 
 const defaultFlags = {
     scene: {
@@ -18,17 +29,23 @@ const defaultFlags = {
 };
 
 Hooks.on("init", () => {
-    CONFIG.Token.documentClass = AVPlaceableDocumentMixin(CONFIG.Token.documentClass);
-    CONFIG.Token.objectClass = AVPlaceableMixin(CONFIG.Token.objectClass);
+    // Mixins for Tokens and Tiles
+    CONFIG.Token.documentClass = SVPlaceableDocumentMixin(CONFIG.Token.documentClass);
+    CONFIG.Token.objectClass = SVPlaceableMixin(CONFIG.Token.objectClass);
 
-    CONFIG.Tile.documentClass = AVPlaceableDocumentMixin(CONFIG.Tile.documentClass);
-    CONFIG.Tile.objectClass = AVPlaceableMixin(CONFIG.Tile.objectClass);
+    CONFIG.Tile.documentClass = SVPlaceableDocumentMixin(CONFIG.Tile.documentClass);
+    CONFIG.Tile.objectClass = SVPlaceableMixin(CONFIG.Tile.objectClass);
 
-    CONFIG.Token.hudClass = AVPlaceableHUDMixin(CONFIG.Token.hudClass);
-    CONFIG.Tile.hudClass = AVPlaceableHUDMixin(CONFIG.Tile.hudClass);
-    CONFIG.Canvas.layers.tiles.layerClass = AVTilesLayerMixin(CONFIG.Canvas.layers.tiles.layerClass);
-    CONFIG.Canvas.layers.avcontrols = { layerClass: AVControlsLayer, group: "interface" };
+    CONFIG.Token.hudClass = SVPlaceableHUDMixin(CONFIG.Token.hudClass);
+    CONFIG.Tile.hudClass = SVPlaceableHUDMixin(CONFIG.Tile.hudClass);
 
+    // Mixin for specific Tiles layer features
+    CONFIG.Canvas.layers.tiles.layerClass = SVTilesLayerMixin(CONFIG.Canvas.layers.tiles.layerClass);
+
+    // The perspective controls layer
+    CONFIG.Canvas.layers.svcontrols = { layerClass: SVControlsLayer, group: "interface" };
+
+    // Setting for the ToggleControls button
     game.settings.register(Constants.MODULE_ID, "toggleVistaControls", {
         name: "SimpleVistas.ToggleControls",
         scope: "client",
@@ -36,7 +53,7 @@ Hooks.on("init", () => {
         type: Boolean,
         onChange: value => {
             if ( !canvas.ready ) return;
-            const layer = canvas.avcontrols;
+            const layer = canvas.svcontrols;
             layer.controls.visible = layer.interactiveChildren = layer.active || value;
         }
     });
@@ -44,10 +61,10 @@ Hooks.on("init", () => {
 
 Hooks.on("getSceneControlButtons", (controls) => {
     controls.push({
-        name: "avcontrols",
+        name: "svcontrols",
         title: "SimpleVistas.SimpleVistas",
         icon: "fas fa-panorama",
-        layer: "avcontrols",
+        layer: "svcontrols",
         visible: game.user.isGM,
         tools: [
             {
@@ -70,12 +87,34 @@ Hooks.on("getSceneControlButtons", (controls) => {
     });
 });
 
-//CONFIG.debug.hooks = true;
+Hooks.on("renderTokenConfig", renderSVPlaceableConfig);
+Hooks.on("renderTileConfig", renderSVPlaceableConfig);
+
+function renderSVPlaceableConfig(app, html) {
+    const flags = foundry.utils.mergeObject(defaultFlags.placeable, app.object.flags[Constants.MODULE_ID]);
+    const tab = `<a class="item" data-tab="simplevistas">
+        <i class="fas fa-panorama"></i> Simple Vista
+    </a>`;
+    const contents = `<div class="tab" data-tab="simplevistas">
+        <div class="form-group">
+            <label>${game.i18n.localize("SimpleVistas.Width")}</label>
+            <input type="number" name="flags.${Constants.MODULE_ID}.width" data-dtype="Number" min="0" value="${flags.width || ""}">
+            <p class="notes">${game.i18n.localize("SimpleVistas.Width_Hint")}</p>
+        </div>
+        <div class="form-group">
+            <label>${game.i18n.localize("SimpleVistas.Height")}</label>
+            <input type="number" name="flags.${Constants.MODULE_ID}.height" data-dtype="Number" min="0" value="${flags.height || ""}">
+            <p class="notes">${game.i18n.localize("SimpleVistas.Height_Hint")}</p>
+        </div>
+    </div>`;
+    html.find(".sheet-tabs:not(.secondary-tabs)").find(".item").last().after(tab);
+    html.find(".sheet-tabs:not(.secondary-tabs)").after(contents);
+}
 
 Hooks.on("renderSceneConfig", (app, html) => {
     const flags = foundry.utils.mergeObject(defaultFlags.scene, app.object.flags[Constants.MODULE_ID]);
     const tab = `<a class="item" data-tab="simplevista">
-        <i class="fas fa-panorama"></i> Simple Vista
+        <i class="fas fa-panorama"></i> Vista
     </a>`;
     const contents = `<div class="tab" data-tab="simplevista">
         <div class="form-group">
@@ -123,7 +162,7 @@ Hooks.on("preUpdateScene", (scene, data, options) => {
             data.flags[Constants.MODULE_ID].horizonTop = Math.round(data.flags[Constants.MODULE_ID].horizonTop * 100) / 100;
             data.flags[Constants.MODULE_ID].maxTop = Math.round(data.flags[Constants.MODULE_ID].maxTop * 100) / 100;
             // check _repositionObjects
-            // disable a bunch of controls unless adapted
+            // we should probably disable some controls unless adapted somehow
             if (data.grid) {
                 const foregroundWidth = data.flags[Constants.MODULE_ID].foregroundWidth;
                 data.grid.type = 0;
@@ -137,47 +176,30 @@ Hooks.on("preUpdateScene", (scene, data, options) => {
 
 Hooks.on("updateScene", (scene) => {
     if (scene.flags[Constants.MODULE_ID].isVista) {
-        canvas.avcontrols.draw();
+        // Redraw the perspective
+        canvas.svcontrols.draw();
     }
 });
 
+// The main parallax implementation
 Hooks.once("canvasReady", () => {
+    // Store the initial position of the background in the PrimaryCanvasGroup
     const initialBackgroundX = canvas.primary.background.x;
     Hooks.on("canvasPan", (canvas, position) => {
         const isVista = canvas.scene.getFlag(Constants.MODULE_ID, "isVista");
         if (isVista ) {
+            // Find the offset
             const r = canvas.dimensions.rect;
             const initialPosition = {x: r.right / 2};
             const offsetX = position.x - initialPosition.x;
             if (offsetX != 0) {
+                // Refresh each placeable's position (_refreshPosition also calculates the current offset)
                 [...canvas.scene.tokens, ...canvas.scene.tiles].filter(t => t.object).forEach(t => t.object._refreshPosition());
-                canvas.avcontrols.controls.draw();
+                // Redraw the perspective rays
+                canvas.svcontrols.controls.draw();
+                // Offset the background
                 canvas.primary.background.x = initialBackgroundX - offsetX * canvas.scene.getFlag(Constants.MODULE_ID, "parallax");
             }
         }
     });
 });
-
-Hooks.on("renderTokenConfig", renderAVPlaceableConfig);
-Hooks.on("renderTileConfig", renderAVPlaceableConfig);
-
-function renderAVPlaceableConfig(app, html) {
-    const flags = foundry.utils.mergeObject(defaultFlags.placeable, app.object.flags[Constants.MODULE_ID]);
-    const tab = `<a class="item" data-tab="simplevistas">
-        <i class="fas fa-panorama"></i> Vista
-    </a>`;
-    const contents = `<div class="tab" data-tab="simplevistas">
-        <div class="form-group">
-            <label>${game.i18n.localize("SimpleVistas.Width")}</label>
-            <input type="number" name="flags.${Constants.MODULE_ID}.width" data-dtype="Number" min="0" value="${flags.width || ""}">
-            <p class="notes">${game.i18n.localize("SimpleVistas.Width_Hint")}</p>
-        </div>
-        <div class="form-group">
-            <label>${game.i18n.localize("SimpleVistas.Height")}</label>
-            <input type="number" name="flags.${Constants.MODULE_ID}.height" data-dtype="Number" min="0" value="${flags.height || ""}">
-            <p class="notes">${game.i18n.localize("SimpleVistas.Height_Hint")}</p>
-        </div>
-    </div>`;
-    html.find(".sheet-tabs:not(.secondary-tabs)").find(".item").last().after(tab);
-    html.find(".sheet-tabs:not(.secondary-tabs)").after(contents);
-}

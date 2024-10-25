@@ -1,6 +1,6 @@
 import { Constants } from "./constants.js";
 
-export class AVControlsLayer extends InteractionLayer {
+export class SVControlsLayer extends InteractionLayer {
 
     interactiveChildren = game.settings.get(Constants.MODULE_ID, "toggleVistaControls");
 
@@ -17,7 +17,7 @@ export class AVControlsLayer extends InteractionLayer {
     async _draw(options = {}) {
         await super._draw(options);
 
-        this.controls = this.addChild(new AVControl());
+        this.controls = this.addChild(new SVControl());
         this.controls.visible = this.active;
         this.controls.draw(options);
     }
@@ -33,8 +33,11 @@ export class AVControlsLayer extends InteractionLayer {
     _onDragLeftMove(event) {
         if (event.interactionData.dragControl) {
             const dragControl = event.interactionData.dragControl;
+            const r = canvas.dimensions.rect;
+            const initialPosition = {x: r.right / 2};
+            const offsetX = (canvas.scene._viewPosition.x - initialPosition.x) * canvas.scene.getFlag(Constants.MODULE_ID, "parallax");
             dragControl.removeChildren();
-            dragControl.parent._createLineWithRect(dragControl, dragControl.line._lineStyle.color, event.interactionData.destination.y, 0);
+            dragControl.parent._createLineWithRect(dragControl, dragControl.line._lineStyle.color, event.interactionData.destination.y, offsetX);
             dragControl.parent.drawRays();
         }
     }
@@ -50,7 +53,7 @@ export class AVControlsLayer extends InteractionLayer {
 
 }
 
-export class AVControl extends PIXI.Container {
+export class SVControl extends PIXI.Container {
     
     constructor() {
         super();
@@ -119,5 +122,5 @@ export class AVControl extends PIXI.Container {
         return this;
     }
   
-  }
+}
   
