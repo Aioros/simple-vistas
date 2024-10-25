@@ -268,6 +268,11 @@ export function SVPlaceableDocumentMixin(Base) {
                         },
                         sort: this.y + height * this.docSizeToPixelsMultiplier
                     };
+                    // Fix for pf2e
+                    if (data.flags?.pf2e) {
+                        updateData.flags.pf2e = {linkToActorSize: false};
+                    }
+                    
                     // For tokens, use the portrait image
                     if (this.actor?.img) {
                         updateData.texture = { src: this.actor.img };
@@ -356,6 +361,22 @@ export function SVPlaceableHUDMixin(Base) {
             position.transform = `scale(${ratio})`;
             this.element.css(position);
             this.element[0].classList.toggle("large", height >= 2);
+        }
+
+        activateListeners(html) {
+            const element = html.get(0);
+            const mirror = document.createElement("div");
+            mirror.classList.add("control-icon");
+            mirror.setAttribute("data-tooltip", "SimpleVistas.Mirror");
+            mirror.setAttribute("data-action", "mirror");
+            const mirrorIcon = document.createElement("i");
+            mirrorIcon.classList.add("fas", "fa-right-left");
+            mirror.appendChild(mirrorIcon);
+            element.querySelector(".col.left").appendChild(mirror);
+            element.querySelector(`.control-icon[data-action="mirror"]`).addEventListener("click", () => {
+                this.document.update({"texture.scaleX": this.document.texture.scaleX * -1});
+            });
+            return super.activateListeners(html);
         }
 
     }

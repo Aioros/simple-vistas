@@ -59,32 +59,34 @@ Hooks.on("init", () => {
     });
 });
 
-Hooks.on("getSceneControlButtons", (controls) => {
-    controls.push({
-        name: "svcontrols",
-        title: "SimpleVistas.SimpleVistas",
-        icon: "fas fa-panorama",
-        layer: "svcontrols",
-        visible: game.user.isGM,
-        tools: [
-            {
-                name: "modify",
-                title: "SimpleVistas.Modify",
-                icon: "fas fa-expand",
-                visible: game.user.isGM,
-            },
-            {
-                name: "toggle",
-                title: "SimpleVistas.ToggleControls",
-                icon: "fas fa-map-pin",
-                visible: game.user.isGM,
-                toggle: true,
-                active: game.settings.get(Constants.MODULE_ID, "toggleVistaControls"),
-                onClick: toggled => game.settings.set(Constants.MODULE_ID, "toggleVistaControls", toggled)
-            }
-        ],
-        activeTool: "modify",
-    });
+Hooks.on("getSceneControlButtons", (controls, ...args) => {
+    if (canvas.scene?.getFlag(Constants.MODULE_ID, "isVista")) {
+        controls.push({
+            name: "svcontrols",
+            title: "SimpleVistas.SimpleVistas",
+            icon: "fas fa-panorama",
+            layer: "svcontrols",
+            visible: game.user.isGM,
+            tools: [
+                {
+                    name: "modify",
+                    title: "SimpleVistas.Modify",
+                    icon: "fas fa-expand",
+                    visible: game.user.isGM,
+                },
+                {
+                    name: "toggle",
+                    title: "SimpleVistas.ToggleControls",
+                    icon: "fas fa-map-pin",
+                    visible: game.user.isGM,
+                    toggle: true,
+                    active: game.settings.get(Constants.MODULE_ID, "toggleVistaControls"),
+                    onClick: toggled => game.settings.set(Constants.MODULE_ID, "toggleVistaControls", toggled)
+                }
+            ],
+            activeTool: "modify",
+        });
+    }
 });
 
 Hooks.on("renderTokenConfig", renderSVPlaceableConfig);

@@ -17,5 +17,7 @@
     "SimpleVistas.Height_Hint": "Height of this object in Vista scenes",
 
     "SimpleVistas.Modify": "Modify Perspective",
-    "SimpleVistas.ToggleControls": "Toggle Perspective Display"
+    "SimpleVistas.ToggleControls": "Toggle Perspective Display",
+
+    "SimpleVistas.Mirror": "Mirror"
 }
