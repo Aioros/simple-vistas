@@ -1,21 +1,21 @@
 {
-    "AiorosVistas.AiorosVistas": "Aioros Vistas",
-    "AiorosVistas.IsVista": "Vista",
-    "AiorosVistas.IsVista_Hint": "Make this scene a Vista",
-    "AiorosVistas.ForegroundWidth": "Foreground Width (ft)",
-    "AiorosVistas.ForegroundWidth_Hint": "How wide is the vista at its closest point",
-    "AiorosVistas.HorizonTop": "Horizon Top %",
-    "AiorosVistas.HorizonTop_Hint": "Position of the horizon, as a percentage from the top",
-    "AiorosVistas.MaxTop": "Max Top %",
-    "AiorosVistas.MaxTop_Hint": "Highest point a placeable can go, as a percentage from the top",
-    "AiorosVistas.ParallaxStrength": "Parallax Strength",
-    "AiorosVistas.ParallaxStrength_Hint": "Strength of the parallax effect on pan",
+    "SimpleVistas.SimpleVistas": "Simple Vistas",
+    "SimpleVistas.IsVista": "Vista",
+    "SimpleVistas.IsVista_Hint": "Make this scene a Vista",
+    "SimpleVistas.ForegroundWidth": "Foreground Width (ft)",
+    "SimpleVistas.ForegroundWidth_Hint": "How wide is the vista at its closest point",
+    "SimpleVistas.HorizonTop": "Horizon Top %",
+    "SimpleVistas.HorizonTop_Hint": "Position of the horizon, as a percentage from the top",
+    "SimpleVistas.MaxTop": "Max Top %",
+    "SimpleVistas.MaxTop_Hint": "Highest point a placeable can go, as a percentage from the top",
+    "SimpleVistas.ParallaxStrength": "Parallax Strength",
+    "SimpleVistas.ParallaxStrength_Hint": "Strength of the parallax effect on pan",
 
-    "AiorosVistas.Width": "Vista Width (ft)",
-    "AiorosVistas.Width_Hint": "Width of this object in Vista scenes",
-    "AiorosVistas.Height": "Vista Height (ft)",
-    "AiorosVistas.Height_Hint": "Height of this object in Vista scenes",
+    "SimpleVistas.Width": "Vista Width (ft)",
+    "SimpleVistas.Width_Hint": "Width of this object in Vista scenes",
+    "SimpleVistas.Height": "Vista Height (ft)",
+    "SimpleVistas.Height_Hint": "Height of this object in Vista scenes",
 
-    "AiorosVistas.Modify": "Modify Perspective",
-    "AiorosVistas.ToggleControls": "Toggle Perspective Display"
+    "SimpleVistas.Modify": "Modify Perspective",
+    "SimpleVistas.ToggleControls": "Toggle Perspective Display"
 }

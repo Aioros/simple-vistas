@@ -1,7 +1,7 @@
 {
-    "id": "aioros-vistas",
-    "name": "aioros-vistas",
-    "title": "Aioros Vistas",
+    "id": "simple-vistas",
+    "name": "simple-vistas",
+    "title": "Simple Vistas",
     "description": "",
     "version": "0.1.0",
     "compatibility": {
@@ -17,11 +17,9 @@
         }
     ],
     "esmodules": [
-        "./scripts/aioros-vistas.js"
+        "./scripts/simple-vistas.js"
     ],
-    "styles": [
-        "./styles/aioros-vistas.css"
-    ],
+    "styles": [],
     "languages": [
         {
         "lang": "en",

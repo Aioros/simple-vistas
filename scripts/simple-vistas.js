@@ -30,7 +30,7 @@ Hooks.on("init", () => {
     CONFIG.Canvas.layers.avcontrols = { layerClass: AVControlsLayer, group: "interface" };
 
     game.settings.register(Constants.MODULE_ID, "toggleVistaControls", {
-        name: "AiorosVistas.ToggleControls",
+        name: "SimpleVistas.ToggleControls",
         scope: "client",
         config: false,
         type: Boolean,
@@ -45,20 +45,20 @@ Hooks.on("init", () => {
 Hooks.on("getSceneControlButtons", (controls) => {
     controls.push({
         name: "avcontrols",
-        title: "AiorosVistas.AiorosVistas",
+        title: "SimpleVistas.SimpleVistas",
         icon: "fas fa-panorama",
         layer: "avcontrols",
         visible: game.user.isGM,
         tools: [
             {
                 name: "modify",
-                title: "AiorosVistas.Modify",
+                title: "SimpleVistas.Modify",
                 icon: "fas fa-expand",
                 visible: game.user.isGM,
             },
             {
                 name: "toggle",
-                title: "AiorosVistas.ToggleControls",
+                title: "SimpleVistas.ToggleControls",
                 icon: "fas fa-map-pin",
                 visible: game.user.isGM,
                 toggle: true,
@@ -74,38 +74,38 @@ Hooks.on("getSceneControlButtons", (controls) => {
 
 Hooks.on("renderSceneConfig", (app, html) => {
     const flags = foundry.utils.mergeObject(defaultFlags.scene, app.object.flags[Constants.MODULE_ID]);
-    const tab = `<a class="item" data-tab="aiorosvista">
-        <i class="fas fa-panorama"></i> Aioros Vista
+    const tab = `<a class="item" data-tab="simplevista">
+        <i class="fas fa-panorama"></i> Simple Vista
     </a>`;
-    const contents = `<div class="tab" data-tab="aiorosvista">
+    const contents = `<div class="tab" data-tab="simplevista">
         <div class="form-group">
-            <label>${game.i18n.localize("AiorosVistas.IsVista")}</label>
+            <label>${game.i18n.localize("SimpleVistas.IsVista")}</label>
             <input type="checkbox" name="flags.${Constants.MODULE_ID}.isVista" data-dtype="Boolean" ${flags.isVista ? "checked" : ""}>
-            <p class="notes">${game.i18n.localize("AiorosVistas.IsVista_Hint")}</p>
+            <p class="notes">${game.i18n.localize("SimpleVistas.IsVista_Hint")}</p>
         </div>
         <div class="form-group">
-            <label>${game.i18n.localize("AiorosVistas.ForegroundWidth")}</label>
+            <label>${game.i18n.localize("SimpleVistas.ForegroundWidth")}</label>
             <input type="number" name="flags.${Constants.MODULE_ID}.foregroundWidth" data-dtype="Number" value="${flags.foregroundWidth || defaultFlags.scene.foregroundWidth}">
-            <p class="notes">${game.i18n.localize("AiorosVistas.ForegroundWidth_Hint")}</p>
+            <p class="notes">${game.i18n.localize("SimpleVistas.ForegroundWidth_Hint")}</p>
         </div>
         <div class="form-group">
-            <label>${game.i18n.localize("AiorosVistas.HorizonTop")}</label>
+            <label>${game.i18n.localize("SimpleVistas.HorizonTop")}</label>
             <input type="number" name="flags.${Constants.MODULE_ID}.horizonTop" data-dtype="Number" min="0" max="1" step="0.01" value="${flags.horizonTop || defaultFlags.scene.horizonTop}">
-            <p class="notes">${game.i18n.localize("AiorosVistas.HorizonTop_Hint")}</p>
+            <p class="notes">${game.i18n.localize("SimpleVistas.HorizonTop_Hint")}</p>
         </div>
         <div class="form-group">
-            <label>${game.i18n.localize("AiorosVistas.MaxTop")}</label>
+            <label>${game.i18n.localize("SimpleVistas.MaxTop")}</label>
             <input type="number" name="flags.${Constants.MODULE_ID}.maxTop" data-dtype="Number" min="0" max="1" step="0.01" value="${flags.maxTop || defaultFlags.scene.maxTop}">
-            <p class="notes">${game.i18n.localize("AiorosVistas.MaxTop_Hint")}</p>
+            <p class="notes">${game.i18n.localize("SimpleVistas.MaxTop_Hint")}</p>
         </div>
         <div class="form-group">
-            <label>${game.i18n.localize("AiorosVistas.ParallaxStrength")}</label>
+            <label>${game.i18n.localize("SimpleVistas.ParallaxStrength")}</label>
             <div class="form-fields">
                 <range-picker name="flags.${Constants.MODULE_ID}.parallax" value="${flags.parallax || defaultFlags.scene.parallax}" min="0" max="1" step="0.05">
                     <input type="range" min="0" max="1" step="0.05"><input type="number" min="0" max="1" step="0.05">
                 </range-picker>
             </div>
-            <p class="notes">${game.i18n.localize("AiorosVistas.ParallaxStrength_Hint")}</p>
+            <p class="notes">${game.i18n.localize("SimpleVistas.ParallaxStrength_Hint")}</p>
         </div>
     </div>`;
     html.find(".sheet-tabs:not(.secondary-tabs)").find(".item").last().after(tab);
@@ -163,19 +163,19 @@ Hooks.on("renderTileConfig", renderAVPlaceableConfig);
 
 function renderAVPlaceableConfig(app, html) {
     const flags = foundry.utils.mergeObject(defaultFlags.placeable, app.object.flags[Constants.MODULE_ID]);
-    const tab = `<a class="item" data-tab="aiorosvistas">
+    const tab = `<a class="item" data-tab="simplevistas">
         <i class="fas fa-panorama"></i> Vista
     </a>`;
-    const contents = `<div class="tab" data-tab="aiorosvistas">
+    const contents = `<div class="tab" data-tab="simplevistas">
         <div class="form-group">
-            <label>${game.i18n.localize("AiorosVistas.Width")}</label>
+            <label>${game.i18n.localize("SimpleVistas.Width")}</label>
             <input type="number" name="flags.${Constants.MODULE_ID}.width" data-dtype="Number" min="0" value="${flags.width || ""}">
-            <p class="notes">${game.i18n.localize("AiorosVistas.Width_Hint")}</p>
+            <p class="notes">${game.i18n.localize("SimpleVistas.Width_Hint")}</p>
         </div>
         <div class="form-group">
-            <label>${game.i18n.localize("AiorosVistas.Height")}</label>
+            <label>${game.i18n.localize("SimpleVistas.Height")}</label>
             <input type="number" name="flags.${Constants.MODULE_ID}.height" data-dtype="Number" min="0" value="${flags.height || ""}">
-            <p class="notes">${game.i18n.localize("AiorosVistas.Height_Hint")}</p>
+            <p class="notes">${game.i18n.localize("SimpleVistas.Height_Hint")}</p>
         </div>
     </div>`;
     html.find(".sheet-tabs:not(.secondary-tabs)").find(".item").last().after(tab);
