@@ -1,8 +1,7 @@
 {
     "id": "simple-vistas",
-    "name": "simple-vistas",
     "title": "Simple Vistas",
-    "description": "",
+    "description": "Did you love Ember's vistas? Would you settle for the poor man's version while you wait? Then this is the module for you.",
     "version": "0.1.0",
     "compatibility": {
         "minimum": "12",
@@ -13,21 +12,36 @@
         {
             "name": "Aioros",
             "email": "aioros83@gmail.com",
-            "discord": "MrAioros"
+            "discord": "MrAioros",
+            "flags": {}
         }
     ],
     "esmodules": [
-        "./scripts/simple-vistas.js"
+        "src/simple-vistas.js"
     ],
-    "styles": [],
     "languages": [
         {
-        "lang": "en",
-        "name": "English",
-        "path": "lang/en.json"
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json",
+            "flags": {}
         }
     ],
-    "url": "",
-    "manifest": "",
-    "download": ""
+    "packs": [
+        {
+            "name": "simple-vistas",
+            "label": "Simple Vistas",
+            "path": "packs/simple-vistas",
+            "type": "Scene",
+            "ownership": {
+                "PLAYER": "OBSERVER",
+                "ASSISTANT": "OWNER"
+            }
+        }
+    ],
+    "url": "https://github.com/Aioros/simple-vistas",
+    "download": "https://github.com/Aioros/simple-vistas/releases/download/v0.1.0/simple-vistas-v0.1.0.zip",
+    "manifest": "https://raw.githubusercontent.com/Aioros/simple-vistas/main/module.json",
+    "readme": "README.md",
+    "bugs": "https://github.com/Aioros/simple-vistas/issues"
 }

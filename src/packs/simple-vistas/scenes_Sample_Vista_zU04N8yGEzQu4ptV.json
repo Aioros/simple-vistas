@@ -1,0 +1,1322 @@
+{
+  "name": "Sample Vista",
+  "navigation": false,
+  "navOrder": 0,
+  "navName": "",
+  "background": {
+    "src": "modules/simple-vistas/assets/vista.webp",
+    "anchorX": 0,
+    "anchorY": 0,
+    "offsetX": 0,
+    "offsetY": 0,
+    "fit": "fill",
+    "scaleX": 1,
+    "scaleY": 1,
+    "rotation": 0,
+    "tint": "#ffffff",
+    "alphaThreshold": 0
+  },
+  "foreground": null,
+  "foregroundElevation": 20,
+  "thumb": "worlds/test-world-v12/assets/scenes/blw3n8VfXKRuVzTH-thumb.webp",
+  "width": 3840,
+  "height": 1080,
+  "padding": 0.25,
+  "initial": {
+    "x": null,
+    "y": null,
+    "scale": 0.5
+  },
+  "backgroundColor": "#999999",
+  "grid": {
+    "type": 0,
+    "size": 55,
+    "style": "solidLines",
+    "thickness": 1,
+    "color": "#000000",
+    "alpha": 0.2,
+    "distance": 1,
+    "units": "ft"
+  },
+  "tokenVision": false,
+  "fog": {
+    "exploration": true,
+    "overlay": null,
+    "colors": {
+      "explored": null,
+      "unexplored": null
+    }
+  },
+  "environment": {
+    "darknessLevel": 0,
+    "darknessLock": false,
+    "globalLight": {
+      "enabled": false,
+      "alpha": 0.5,
+      "bright": false,
+      "color": null,
+      "coloration": 1,
+      "luminosity": 0,
+      "saturation": 0,
+      "contrast": 0,
+      "shadows": 0,
+      "darkness": {
+        "min": 0,
+        "max": 1
+      }
+    },
+    "cycle": true,
+    "base": {
+      "hue": 0,
+      "intensity": 0,
+      "luminosity": 0,
+      "saturation": 0,
+      "shadows": 0
+    },
+    "dark": {
+      "hue": 0.7138888888888889,
+      "intensity": 0,
+      "luminosity": -0.25,
+      "saturation": 0,
+      "shadows": 0
+    }
+  },
+  "drawings": [],
+  "tokens": [],
+  "lights": [],
+  "notes": [],
+  "sounds": [],
+  "regions": [],
+  "templates": [],
+  "tiles": [
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_tree3_4.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 1918,
+      "y": 462,
+      "width": 642.1,
+      "height": 879.4,
+      "elevation": 0,
+      "sort": 1342,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "wAcoFsLPGadvtmoj",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 11.44278205997658,
+          "height": 16.276138083267284
+        },
+        "simple-vistas": {
+          "width": 11.91,
+          "height": 16.31
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.wAcoFsLPGadvtmoj"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_tree3_4.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 2305,
+      "y": 600,
+      "width": 358.5,
+      "height": 409.4,
+      "elevation": 0,
+      "sort": 1010,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "QBe1lR7woeRnfBAV",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 13.12184388918052,
+          "height": 15.087961497275387
+        },
+        "simple-vistas": {
+          "width": 13.24,
+          "height": 15.12
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.QBe1lR7woeRnfBAV"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_tree4.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 3916,
+      "y": 611,
+      "width": 363.5,
+      "height": 641.8,
+      "elevation": 0,
+      "sort": 1253,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "pcJNvMuF0GOOfsR3",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 7.998387111756012,
+          "height": 13.834968899654177
+        },
+        "simple-vistas": {
+          "width": 7.77,
+          "height": 13.72
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.pcJNvMuF0GOOfsR3"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_tree1.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 3732,
+      "y": 520,
+      "width": 298.7,
+      "height": 556.4,
+      "elevation": 0,
+      "sort": 1076,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "0VGHIlbna6GnLfI1",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 9.510818060816302,
+          "height": 17.521047301104513
+        },
+        "simple-vistas": {
+          "width": 9.2,
+          "height": 17.14
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.0VGHIlbna6GnLfI1"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_tree2.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 3590,
+      "y": 567,
+      "width": 195.2,
+      "height": 414.1,
+      "elevation": 0,
+      "sort": 981,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "VllfMWzER4OSEvij",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 8.732634339866523,
+          "height": 18.12424080194113
+        },
+        "simple-vistas": {
+          "width": 7.89,
+          "height": 16.74
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.VllfMWzER4OSEvij"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_ruin2.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 2683,
+      "y": 730,
+      "width": 182.3,
+      "height": 190.4,
+      "elevation": 0,
+      "sort": 920,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "KMtAOMacgmR05CYH",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 10.078497739522208,
+          "height": 10.794961638717455
+        },
+        "simple-vistas": {
+          "width": 9.19,
+          "height": 9.6
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.KMtAOMacgmR05CYH"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_ruin1.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 2829,
+      "y": 750,
+      "width": 172.7,
+      "height": 213,
+      "elevation": 0,
+      "sort": 963,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "6MutPgiyXpXHTeFB",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 8.44323707115417,
+          "height": 10.250077666838035
+        },
+        "simple-vistas": {
+          "width": 7.41,
+          "height": 9.14
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.6MutPgiyXpXHTeFB"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_ruin3.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 3003,
+      "y": 733,
+      "width": 182,
+      "height": 198.3,
+      "elevation": 0,
+      "sort": 931,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "SyDqAEEJ7NnBqeCs",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 9.24039549760475,
+          "height": 10.261997555125706
+        },
+        "simple-vistas": {
+          "width": 8.78,
+          "height": 9.57
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.SyDqAEEJ7NnBqeCs"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_stone3.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 3136,
+      "y": 863,
+      "width": 107.9,
+      "height": 101.9,
+      "elevation": 0,
+      "sort": 965,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "kqy40HaD16ADdBuc",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 4.5,
+          "height": 4.762704816162908
+        },
+        "simple-vistas": {
+          "width": 4.6,
+          "height": 4.34
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.kqy40HaD16ADdBuc"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_bush3.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 3667,
+      "y": 1026,
+      "width": 241.4,
+      "height": 162.9,
+      "elevation": 0,
+      "sort": 1189,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "4RF5JtUxQ4wo5TTu",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 6.208528755262451,
+          "height": 4.136986583330817
+        },
+        "simple-vistas": {
+          "width": 5.8,
+          "height": 3.92
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.4RF5JtUxQ4wo5TTu"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_bush3.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 3048,
+      "y": 885,
+      "width": 144,
+      "height": 96,
+      "elevation": 0,
+      "sort": 981,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 6.208528755262451,
+          "height": 4.136986583330817
+        }
+      },
+      "_id": "YYa8eU7uXZYvQZ24",
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.YYa8eU7uXZYvQZ24"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_bush3.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 2581,
+      "y": 873,
+      "width": 135,
+      "height": 90,
+      "elevation": 0,
+      "sort": 963,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 6.208528755262451,
+          "height": 4.136986583330817
+        }
+      },
+      "_id": "HQ5WxZM5y7PByq09",
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.HQ5WxZM5y7PByq09"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_plant3.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 3076,
+      "y": 968,
+      "width": 40.5,
+      "height": 51,
+      "elevation": 0,
+      "sort": 1019,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "fkvHvQJOWCMDKvVD",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 1.248900342532369,
+          "height": 1.4938352274848405
+        },
+        "simple-vistas": {
+          "width": 1.45,
+          "height": 1.83
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.fkvHvQJOWCMDKvVD"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_plant3.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 2831,
+      "y": 1252,
+      "width": 52.5,
+      "height": 54.3,
+      "elevation": 0,
+      "sort": 1306,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "I68RGKdjICaSR2tv",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 1.4469561644185032,
+          "height": 1.6817784041118602
+        },
+        "simple-vistas": {
+          "width": 1.03,
+          "height": 1.06
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.I68RGKdjICaSR2tv"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_plant3.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 3410,
+      "y": 1137,
+      "width": 50.2,
+      "height": 59.7,
+      "elevation": 0,
+      "sort": 1197,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "hMxPBwjdDNCwHiFB",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 1.3547791013514736,
+          "height": 1.7801878911556621
+        },
+        "simple-vistas": {
+          "width": 1.19,
+          "height": 1.41
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.hMxPBwjdDNCwHiFB"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_plant3.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 3577,
+      "y": 962,
+      "width": 24.2,
+      "height": 74.2,
+      "elevation": 0,
+      "sort": 1036,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "XnXqqLUd1HKxDC7l",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 1.5715980271343222,
+          "height": 1.6910950647315919
+        },
+        "simple-vistas": {
+          "width": 0.83,
+          "height": 2.54
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.XnXqqLUd1HKxDC7l"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_plant3.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 2749,
+      "y": 929,
+      "width": 29.5,
+      "height": 43.1,
+      "elevation": 0,
+      "sort": 972,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "HsKl7fiQzD4Mt1CS",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 1.089401910078907,
+          "height": 1.5084443281484476
+        },
+        "simple-vistas": {
+          "width": 1.23,
+          "height": 1.79
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.HsKl7fiQzD4Mt1CS"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_pillar2.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 2233,
+      "y": 898,
+      "width": 251.2,
+      "height": 102.4,
+      "elevation": 0,
+      "sort": 1000,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "h3yVs3qvZCZvNERP",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 10.464238395476714,
+          "height": 3.994831106883198
+        },
+        "simple-vistas": {
+          "width": 9.55,
+          "height": 3.89
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.h3yVs3qvZCZvNERP"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_bush2.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 3760,
+      "y": 1173,
+      "width": 256.5,
+      "height": 155.6,
+      "elevation": 0,
+      "sort": 1329,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "_id": "BjZdoNYgPrWQjfYE",
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 4.67,
+          "height": 3.38
+        },
+        "simple-vistas": {
+          "width": 4.85,
+          "height": 2.94
+        }
+      },
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.BjZdoNYgPrWQjfYE"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_bush2.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 3504,
+      "y": 905,
+      "width": 114.5,
+      "height": 85.6,
+      "elevation": 0,
+      "sort": 991,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 4.897041454688137,
+          "height": 3.4063416144949814
+        },
+        "simple-vistas": {
+          "width": 4.48,
+          "height": 3.35
+        }
+      },
+      "_id": "of10OPZoQSbgXNyt",
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.of10OPZoQSbgXNyt"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_bush2.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 1867,
+      "y": 1057,
+      "width": 198,
+      "height": 138,
+      "elevation": 0,
+      "sort": 1183,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 4.897041454688137,
+          "height": 3.4063416144949814
+        }
+      },
+      "_id": "7zHzaNQZvFhJrcDZ",
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.7zHzaNQZvFhJrcDZ"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_bush2.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 1895,
+      "y": 961,
+      "width": 149,
+      "height": 103,
+      "elevation": 0,
+      "sort": 961,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 4.897041454688137,
+          "height": 3.4063416144949814
+        },
+        "simple-vistas": {
+          "width": null,
+          "height": null
+        }
+      },
+      "_id": "wp3RtYq27OcnZnRN",
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.wp3RtYq27OcnZnRN"
+    },
+    {
+      "texture": {
+        "src": "modules/simple-vistas/assets/aeynit_ff_tree3_4.png",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "offsetX": 0,
+        "offsetY": 0,
+        "fit": "fill",
+        "scaleX": 1,
+        "scaleY": 1,
+        "rotation": 0,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "x": 1674,
+      "y": 537,
+      "width": 416.9,
+      "height": 570.9,
+      "elevation": 0,
+      "sort": 1108,
+      "occlusion": {
+        "mode": 0,
+        "alpha": 0
+      },
+      "rotation": 0,
+      "alpha": 1,
+      "hidden": false,
+      "locked": false,
+      "restrictions": {
+        "light": false,
+        "weather": false
+      },
+      "video": {
+        "loop": true,
+        "autoplay": true,
+        "volume": 0
+      },
+      "flags": {
+        "aioros-vistas": {
+          "originalWidth": 1,
+          "originalHeight": 1,
+          "width": 11.44278205997658,
+          "height": 16.276138083267284
+        },
+        "simple-vistas": {
+          "width": 11.91,
+          "height": 16.31,
+          "originalWidth": 1,
+          "originalHeight": 1
+        }
+      },
+      "_id": "3bv2HGIQZHzvpIIV",
+      "_key": "!scenes.tiles!zU04N8yGEzQu4ptV.3bv2HGIQZHzvpIIV"
+    }
+  ],
+  "walls": [],
+  "playlist": null,
+  "playlistSound": null,
+  "journal": null,
+  "journalEntryPage": null,
+  "weather": "",
+  "folder": null,
+  "ownership": {
+    "default": 0,
+    "Rx9cYcpwRSpkCSjg": 3
+  },
+  "flags": {
+    "aioros-vistas": {
+      "isVista": true,
+      "fov": 90,
+      "foregroundDistance": 10,
+      "horizonTop": 0.35,
+      "maxTop": 0.55,
+      "parallax": 0.2,
+      "foregroundWidth": 70
+    },
+    "simple-vistas": {
+      "isVista": true,
+      "foregroundWidth": 70,
+      "horizonTop": 0.37,
+      "maxTop": 0.56,
+      "parallax": 0.2
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "12.331",
+    "systemId": "dnd5e",
+    "systemVersion": "4.0.2",
+    "createdTime": 1729888063438,
+    "modifiedTime": 1729888063438,
+    "lastModifiedBy": "Rx9cYcpwRSpkCSjg"
+  },
+  "_id": "zU04N8yGEzQu4ptV",
+  "active": false,
+  "sort": 0,
+  "_key": "!scenes!zU04N8yGEzQu4ptV"
+}

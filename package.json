@@ -1,0 +1,17 @@
+{
+  "name": "simple-vistas",
+  "version": "0.1.0",
+  "description": "A Foundry VTT module inspired by [Ember](https://foundryvtt.com/ember/)'s vista system.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "pack": "node ./tools/pack.js",
+    "unpack": "node ./tools/unpack.js",
+    "build": "npm run pack"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@foundryvtt/foundryvtt-cli": "^1.0.3"
+  }
+}

@@ -54,7 +54,10 @@ jobs:
           file: module.json
           fields: "{\"version\": \"${{ steps.set_vars.outputs.VERSION }}\", \"download\": \"${{ steps.set_vars.outputs.ZIPURL }}\"}"
       - name: Build Project
-        run: zip simple-vistas-${{ steps.get_version.outputs.FULLVERSION }}.zip module.json README.md scripts/* lang/* packs/* assets/*
+        run: |
+          npm install
+          npm run build
+          zip simple-vistas-${{ steps.get_version.outputs.FULLVERSION }}.zip module.json README.md src/* lang/* assets/*
       - name: Create Release And Upload Asset
         id: create-release-upload
         uses: softprops/action-gh-release@v2
@@ -64,5 +67,5 @@ jobs:
           tag_name: ${{ steps.get_version.outputs.FULLVERSION }}
           name: ${{ steps.get_version.outputs.FULLVERSION }}
           files: |
-            5e-statblock-importer-${{ steps.get_version.outputs.FULLVERSION }}.zip
+            simple-vistas-${{ steps.get_version.outputs.FULLVERSION }}.zip
             module.json
