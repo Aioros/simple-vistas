@@ -2,7 +2,7 @@ import { compilePack } from '@foundryvtt/foundryvtt-cli';
 import { promises as fs } from 'fs';
 
 const MODULE_ID = process.cwd();
-const yaml = true;
+const yaml = false;
 
 const packs = await fs.readdir('./src/packs');
 for (const pack of packs) {
