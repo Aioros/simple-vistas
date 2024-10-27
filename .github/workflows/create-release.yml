@@ -57,7 +57,7 @@ jobs:
         run: |
           npm install
           npm run build
-          zip simple-vistas-${{ steps.get_version.outputs.FULLVERSION }}.zip module.json README.md src/* lang/* assets/* packs/*
+          zip -r simple-vistas-${{ steps.get_version.outputs.FULLVERSION }}.zip module.json README.md src/* lang/* assets/* packs/*
       - name: Create Release And Upload Asset
         id: create-release-upload
         uses: softprops/action-gh-release@v2
