@@ -364,6 +364,8 @@ export function SVPlaceableHUDMixin(Base) {
         }
 
         activateListeners(html) {
+            const isVista = this.document.parent.getFlag(Constants.MODULE_ID, "isVista");
+            if (!isVista) return super.activateListeners(html);
             const element = html.get(0);
             const mirror = document.createElement("div");
             mirror.classList.add("control-icon");
@@ -376,7 +378,6 @@ export function SVPlaceableHUDMixin(Base) {
             element.querySelector(`.control-icon[data-action="mirror"]`).addEventListener("click", () => {
                 this.document.update({"texture.scaleX": this.document.texture.scaleX * -1});
             });
-            return super.activateListeners(html);
         }
 
     }

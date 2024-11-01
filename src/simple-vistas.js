@@ -177,7 +177,7 @@ Hooks.on("preUpdateScene", (scene, data, options) => {
 });
 
 Hooks.on("updateScene", (scene) => {
-    if (scene.flags[Constants.MODULE_ID].isVista) {
+    if (scene.flags[Constants.MODULE_ID]?.isVista) {
         // Redraw the perspective
         canvas.svcontrols.draw();
     }
