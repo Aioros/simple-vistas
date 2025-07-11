@@ -9,8 +9,8 @@ export function SVPlaceableMixin(Base) {
         _refreshState() {
             super._refreshState();
             const isVista = this.scene.getFlag(Constants.MODULE_ID, "isVista");
-            if (isVista && this instanceof Tile) {
-                this.mesh.sortLayer = PrimaryCanvasGroup.SORT_LAYERS.TOKENS;
+            if (isVista && this instanceof foundry.canvas.placeables.Tile) {
+                this.mesh.sortLayer = foundry.canvas.groups.PrimaryCanvasGroup.SORT_LAYERS.TOKENS;
             }
         }
 
@@ -19,7 +19,7 @@ export function SVPlaceableMixin(Base) {
             const isVista = this.scene.getFlag(Constants.MODULE_ID, "isVista");
             if (!isVista || !this.mesh || this._original) return super._refreshPosition();
             const {x, y} = this.document;
-            if ( (this.position.x !== x) || (this.position.y !== y) ) MouseInteractionManager.emulateMoveEvent();
+            if ( (this.position.x !== x) || (this.position.y !== y) ) foundry.canvas.interaction.MouseInteractionManager.emulateMoveEvent();
             this.position.set(x + this.document.svParallaxOffset, y);
             if (this.mesh) {
                 this.mesh.position = this.getCenterPoint(this.position);
@@ -32,7 +32,7 @@ export function SVPlaceableMixin(Base) {
                 const isVista = this.scene.getFlag(Constants.MODULE_ID, "isVista");
                 if (isVista && this.frame) {
                     this.frame.removeChild(this.frame.handle);
-                    this.frame.handle = this.frame.addChild(new ResizeHandle([1, 0]));
+                    this.frame.handle = this.frame.addChild(new foundry.canvas.containers.ResizeHandle([1, 0]));
                     this.frame.handle.eventMode = "static";
                 }
             });
@@ -54,17 +54,24 @@ export function SVPlaceableMixin(Base) {
 
         // Determines a new size for the placeable from a delta offset
         _updateScale({delta=0, snap=0}={}) {
-            const svFlags = this.document.flags[Constants.MODULE_ID];
-            const ratio = svFlags.width / svFlags.height;
-            let width = svFlags.width + delta;
+            let { width: svWidth, height: svHeight } = this.document.flags[Constants.MODULE_ID];
+            let ratio;
+            if (!svWidth) {
+                ratio = this.width / this.height;
+                svWidth = Constants.MD_TILE_WIDTH;
+                svHeight = svWidth / ratio;
+            } else {
+                ratio = svWidth / svHeight;
+            }
+            let width = svWidth + delta;
             if ( snap > 0 ) width = width.toNearest(snap);
             let height = width / ratio;
             return { width, height };
         }
 
         // Override - Corrects movement with arrow keys
-        _getShiftedPosition(dx, dy) {
-            let result = super._getShiftedPosition(dx, dy);
+        _getShiftedPosition(dx, dy, dz) {
+            let result = super._getShiftedPosition(dx, dy, dz);
             const isVista = this.document.parent.getFlag(Constants.MODULE_ID, "isVista");
             if (isVista) {
                 const xDiff = result.x - this.document.x;
@@ -74,16 +81,18 @@ export function SVPlaceableMixin(Base) {
                 const prevScaleFactor = getScaleFactor(prevBottomY, this.document.parent);
                 const newScaleFactor = getScaleFactor(newBottomY, this.document.parent);
                 const newHeight = this.document.svBaseHeight / Constants.GRID_DISTANCE * this.document.parent.grid.size * newScaleFactor;
+                const newWidth = this.document.svBaseWidth / Constants.GRID_DISTANCE * this.document.parent.grid.size * newScaleFactor;
                 const newTopY = newBottomY - newHeight;
                 const adjustedYDiff = newTopY - this.document.y;
                 result.x = this.document.x + xDiff * prevScaleFactor;
                 result.y = this.document.y + adjustedYDiff * prevScaleFactor;
+                result.width = Math.round(newWidth / this.document.docSizeToPixelsMultiplier * 10000) / 10000;
+                result.height = Math.round(newHeight / this.document.docSizeToPixelsMultiplier * 10000) / 10000;
                 result.scaleFactor = newScaleFactor;
             }
             return result;
         }
 
-        // Override - Transforms the clone preview token based on the calculated scale factor at its bottom position
         _onDragLeftMove(event) {
             const isVista = this.scene.getFlag(Constants.MODULE_ID, "isVista");
             if (!isVista) return super._onDragLeftMove(event);
@@ -189,14 +198,28 @@ export function SVPlaceableMixin(Base) {
         _prepareDragLeftDropUpdates(event) {
             const isVista = canvas.scene.getFlag(Constants.MODULE_ID, "isVista");
             if (!isVista) return super._prepareDragLeftDropUpdates(event);
-
+        
             const updates = [];
             for ( const clone of event.interactionData.clones ) {
                 const {document, _original: original} = clone;
-                const dest = {x: document.x, y: document.y, scaleFactor: document.svPixelHeight / (document.svBaseHeight / Constants.GRID_DISTANCE * document.parent.grid.size)};
+                const scaleFactor = document.svPixelHeight / (document.svBaseHeight / Constants.GRID_DISTANCE * document.parent.grid.size);
+                const dest = {
+                    x: document.x,
+                    y: document.y,
+                    scaleFactor
+                };
+                const originalSize = {
+                    width: original.document.svBaseWidth / Constants.GRID_DISTANCE,
+                    height: original.document.svBaseHeight / Constants.GRID_DISTANCE
+                };
+                const width = originalSize.width * (document.parent.grid.size / document.docSizeToPixelsMultiplier) * scaleFactor;
+                const height = originalSize.height * (document.parent.grid.size / document.docSizeToPixelsMultiplier) * scaleFactor;
+                dest.width = Math.round(width * 10000) / 10000;
+                dest.height = Math.round(height * 10000) / 10000;
+
                 const target = clone.getCenterPoint(dest);
                 if ( !canvas.dimensions.rect.contains(target.x, target.y) ) continue;
-                updates.push({_id: original.id, x: dest.x, y: dest.y, scaleFactor: dest.scaleFactor});
+                updates.push({_id: original.id, ...dest});
             }
             return updates;
         }
@@ -287,9 +310,16 @@ export function SVPlaceableDocumentMixin(Base) {
 
         // Override - Manages updates to the document
         async _preUpdate(changed, options, user) {
+            const originalResult = await super._preUpdate(changed, options, user);
+
             if ( user.id === game.user.id ) {
                 const isVista = this.parent.getFlag(Constants.MODULE_ID, "isVista");
                 if (isVista) {
+                    const movementInfo = options.movement?.[this.id].waypoints.at(-1);
+                    if (movementInfo) {
+                        changed.scaleFactor = movementInfo.scaleFactor;
+                    }
+                    
                     if (changed.hasOwnProperty("y") && changed.y != this.y || changed.hasOwnProperty("scaleFactor")) {
                         const originalSize = {
                             width: (changed.flags?.[Constants.MODULE_ID]?.width || this.svBaseWidth) / Constants.GRID_DISTANCE,
@@ -306,12 +336,13 @@ export function SVPlaceableDocumentMixin(Base) {
                             newBottomY = Math.max(newBottomY, minY);
                             scaleFactor = getScaleFactor(newBottomY, this.parent);
                         }
+                        
                         changed.y = newBottomY - originalSize.height * this.docSizeToPixelsMultiplier * scaleFactor;
                         const width = originalSize.width * (this.parent.grid.size / this.docSizeToPixelsMultiplier) * scaleFactor;
                         const height = originalSize.height * (this.parent.grid.size / this.docSizeToPixelsMultiplier) * scaleFactor;
                         const sort = changed.y + height * this.docSizeToPixelsMultiplier;
-                        changed.width = width;
-                        changed.height = height;
+                        changed.width = Math.round(width * 10000) / 10000;
+                        changed.height = Math.round(height * 10000) / 10000;
                         changed.sort = sort;
                     } else if (changed.flags?.[Constants.MODULE_ID]?.height) {
                         const currentScaleFactor = getScaleFactor(this.y + this.svPixelHeight, this.parent);
@@ -340,8 +371,13 @@ export function SVPlaceableDocumentMixin(Base) {
                     }
                 }
             }
+        
+            return originalResult;
+        }
 
-            return super._preUpdate(changed, options, user);
+        // Disable auto-rotation because it never makes sense in our scenes
+        async _preUpdateMovement(movement, operation) {
+            movement.autoRotate &&= !this.parent.getFlag(Constants.MODULE_ID, "isVista");
         }
 
     }
@@ -350,23 +386,9 @@ export function SVPlaceableDocumentMixin(Base) {
 export function SVPlaceableHUDMixin(Base) {
     return class SVPlaceableHUD extends Base {
 
-        // Override - We try to keep the hud at a consistent size
-        setPosition(_position) {
+        _onRender(context, options) {
             const isVista = this.document.parent.getFlag(Constants.MODULE_ID, "isVista");
-            if (!isVista) return super.setPosition(_position);
-            const b = this.object.bounds;
-            const {width, height} = this.document;
-            const ratio = 1.0;
-            const position = {width: width * canvas.dimensions.size / ratio, height: height * canvas.dimensions.size / ratio, left: b.left, top: b.top};
-            position.transform = `scale(${ratio})`;
-            this.element.css(position);
-            this.element[0].classList.toggle("large", height >= 2);
-        }
-
-        activateListeners(html) {
-            const isVista = this.document.parent.getFlag(Constants.MODULE_ID, "isVista");
-            if (!isVista) return super.activateListeners(html);
-            const element = html.get(0);
+            if (!isVista) return super._onRender(context, options);
             const mirror = document.createElement("div");
             mirror.classList.add("control-icon");
             mirror.setAttribute("data-tooltip", "SimpleVistas.Mirror");
@@ -374,10 +396,21 @@ export function SVPlaceableHUDMixin(Base) {
             const mirrorIcon = document.createElement("i");
             mirrorIcon.classList.add("fas", "fa-right-left");
             mirror.appendChild(mirrorIcon);
-            element.querySelector(".col.left").appendChild(mirror);
-            element.querySelector(`.control-icon[data-action="mirror"]`).addEventListener("click", () => {
+            this.element.querySelector(".col.left").appendChild(mirror);
+            this.element.querySelector(`.control-icon[data-action="mirror"]`).addEventListener("click", () => {
                 this.document.update({"texture.scaleX": this.document.texture.scaleX * -1});
             });
+
+            // We try to keep the hud at a consistent size
+            const b = this.object.bounds;
+            const {width, height} = this.document;
+            const ratio = 1.0;
+            this.element.style.width = `${width * canvas.dimensions.size / ratio}px`;
+            this.element.style.height = `${height * canvas.dimensions.size / ratio}px`;
+            this.element.style.left = b.left;
+            this.element.style.top = b.top;
+            this.element.style.transform = `scale(${ratio})`;
+            this.element.classList.toggle("large", height >= 2);
         }
 
     }

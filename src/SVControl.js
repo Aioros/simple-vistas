@@ -1,6 +1,6 @@
 import { Constants } from "./constants.js";
 
-export class SVControlsLayer extends InteractionLayer {
+export class SVControlsLayer extends foundry.canvas.layers.InteractionLayer {
 
     interactiveChildren = game.settings.get(Constants.MODULE_ID, "toggleVistaControls");
 

@@ -23,7 +23,7 @@ export function SVTilesLayerMixin(Base) {
             }
             const objects = this._getMovableObjects(ids, includeLocked);
             if ( !objects.length ) return objects;
-            this.hud?.clear();
+            this.hud?.close();
             const updateData = objects.map(o => ({
                 _id: o.id,
                 flags: {

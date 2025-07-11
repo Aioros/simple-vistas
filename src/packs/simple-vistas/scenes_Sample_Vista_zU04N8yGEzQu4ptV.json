@@ -18,7 +18,7 @@
   },
   "foreground": null,
   "foregroundElevation": 20,
-  "thumb": "worlds/test-world-v12/assets/scenes/blw3n8VfXKRuVzTH-thumb.webp",
+  "thumb": "modules/simple-vistas/assets/vista-thumb.webp",
   "width": 3840,
   "height": 1080,
   "padding": 0.25,

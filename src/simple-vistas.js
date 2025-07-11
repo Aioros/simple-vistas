@@ -61,31 +61,31 @@ Hooks.on("init", () => {
 
 Hooks.on("getSceneControlButtons", (controls, ...args) => {
     if (canvas.scene?.getFlag(Constants.MODULE_ID, "isVista")) {
-        controls.push({
+        controls.svcontrols = {
             name: "svcontrols",
             title: "SimpleVistas.SimpleVistas",
             icon: "fas fa-panorama",
             layer: "svcontrols",
             visible: game.user.isGM,
-            tools: [
-                {
+            tools: {
+                modify: {
                     name: "modify",
                     title: "SimpleVistas.Modify",
                     icon: "fas fa-expand",
                     visible: game.user.isGM,
                 },
-                {
+                toggle: {
                     name: "toggle",
                     title: "SimpleVistas.ToggleControls",
                     icon: "fas fa-map-pin",
                     visible: game.user.isGM,
                     toggle: true,
                     active: game.settings.get(Constants.MODULE_ID, "toggleVistaControls"),
-                    onClick: toggled => game.settings.set(Constants.MODULE_ID, "toggleVistaControls", toggled)
+                    onChange: (event, toggled) => game.settings.set(Constants.MODULE_ID, "toggleVistaControls", toggled)
                 }
-            ],
+            },
             activeTool: "modify",
-        });
+        };
     }
 });
 
@@ -93,11 +93,17 @@ Hooks.on("renderTokenConfig", renderSVPlaceableConfig);
 Hooks.on("renderTileConfig", renderSVPlaceableConfig);
 
 function renderSVPlaceableConfig(app, html) {
-    const flags = foundry.utils.mergeObject(defaultFlags.placeable, app.object.flags[Constants.MODULE_ID]);
-    const tab = `<a class="item" data-tab="simplevistas">
-        <i class="fas fa-panorama"></i> Simple Vista
-    </a>`;
-    const contents = `<div class="tab" data-tab="simplevistas">
+    const flags = foundry.utils.mergeObject(defaultFlags.placeable, app.document.flags[Constants.MODULE_ID]);
+    const tab = document.createElement("a");
+    tab.dataset.action = "tab";
+    tab.dataset.group = "sheet";
+    tab.dataset.tab = "simplevistas";
+    tab.innerHTML = `<i class="fa-solid fa-panorama"></i> <span>Simple Vista</span>`;
+    const contents = document.createElement("div");
+    contents.classList.add("tab");
+    contents.dataset.group = "sheet";
+    contents.dataset.tab = "simplevistas";
+    contents.innerHTML = `
         <div class="form-group">
             <label>${game.i18n.localize("SimpleVistas.Width")}</label>
             <input type="number" name="flags.${Constants.MODULE_ID}.width" data-dtype="Number" min="0" value="${flags.width || ""}">
@@ -108,17 +114,23 @@ function renderSVPlaceableConfig(app, html) {
             <input type="number" name="flags.${Constants.MODULE_ID}.height" data-dtype="Number" min="0" value="${flags.height || ""}">
             <p class="notes">${game.i18n.localize("SimpleVistas.Height_Hint")}</p>
         </div>
-    </div>`;
-    html.find(".sheet-tabs:not(.secondary-tabs)").find(".item").last().after(tab);
-    html.find(".sheet-tabs:not(.secondary-tabs)").after(contents);
+    `;
+    html.querySelector("nav.sheet-tabs").appendChild(tab);
+    html.querySelector(".tab:last-of-type").after(contents);
 }
 
 Hooks.on("renderSceneConfig", (app, html) => {
-    const flags = foundry.utils.mergeObject(defaultFlags.scene, app.object.flags[Constants.MODULE_ID]);
-    const tab = `<a class="item" data-tab="simplevista">
-        <i class="fas fa-panorama"></i> Vista
-    </a>`;
-    const contents = `<div class="tab" data-tab="simplevista">
+    const flags = foundry.utils.mergeObject(defaultFlags.scene, app.document.flags[Constants.MODULE_ID]);
+    const tab = document.createElement("a");
+    tab.dataset.action = "tab";
+    tab.dataset.group = "sheet";
+    tab.dataset.tab = "simplevistas";
+    tab.innerHTML = `<i class="fa-solid fa-panorama"></i> <span>Vista</span>`;
+    const contents = document.createElement("div");
+    contents.classList.add("tab");
+    contents.dataset.group = "sheet";
+    contents.dataset.tab = "simplevistas";
+    contents.innerHTML = `
         <div class="form-group">
             <label>${game.i18n.localize("SimpleVistas.IsVista")}</label>
             <input type="checkbox" name="flags.${Constants.MODULE_ID}.isVista" data-dtype="Boolean" ${flags.isVista ? "checked" : ""}>
@@ -148,9 +160,9 @@ Hooks.on("renderSceneConfig", (app, html) => {
             </div>
             <p class="notes">${game.i18n.localize("SimpleVistas.ParallaxStrength_Hint")}</p>
         </div>
-    </div>`;
-    html.find(".sheet-tabs:not(.secondary-tabs)").find(".item").last().after(tab);
-    html.find(".sheet-tabs:not(.secondary-tabs)").after(contents);
+    `;
+    html.querySelector("nav.sheet-tabs").appendChild(tab);
+    html.querySelector(".tab:last-of-type").after(contents);
 });
 
 Hooks.on("preUpdateScene", (scene, data, options) => {
