@@ -2,6 +2,44 @@ import { Constants } from "./constants.js";
 
 export class SVControlsLayer extends foundry.canvas.layers.InteractionLayer {
 
+    static get layerOptions() {
+        return Object.assign(super.layerOptions, {
+            name: "svcontrols",
+        });
+    }
+
+    /** @override */
+    static prepareSceneControls() {
+        return {
+            name: "svcontrols",
+            title: "SimpleVistas.SimpleVistas",
+            icon: "fa-solid fa-panorama",
+            layer: "svcontrols",
+            visible: !!canvas.scene?.getFlag(Constants.MODULE_ID, "isVista") && game.user.isGM,
+            onChange: (event, active) => {
+                if ( active ) canvas.svcontrols.activate();
+            },
+            tools: {
+                modify: {
+                    name: "modify",
+                    title: "SimpleVistas.Modify",
+                    icon: "fas fa-expand",
+                    visible: game.user.isGM,
+                },
+                toggle: {
+                    name: "toggle",
+                    title: "SimpleVistas.ToggleControls",
+                    icon: "fas fa-map-pin",
+                    visible: game.user.isGM,
+                    toggle: true,
+                    active: game.settings.get(Constants.MODULE_ID, "toggleVistaControls"),
+                    onChange: (event, toggled) => game.settings.set(Constants.MODULE_ID, "toggleVistaControls", toggled)
+                }
+            },
+            activeTool: "modify",
+        };
+    }
+
     interactiveChildren = game.settings.get(Constants.MODULE_ID, "toggleVistaControls");
 
     _activate() {

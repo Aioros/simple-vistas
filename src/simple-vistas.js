@@ -59,50 +59,23 @@ Hooks.on("init", () => {
     });
 });
 
-Hooks.on("getSceneControlButtons", (controls, ...args) => {
-    if (canvas.scene?.getFlag(Constants.MODULE_ID, "isVista")) {
-        controls.svcontrols = {
-            name: "svcontrols",
-            title: "SimpleVistas.SimpleVistas",
-            icon: "fas fa-panorama",
-            layer: "svcontrols",
-            visible: game.user.isGM,
-            tools: {
-                modify: {
-                    name: "modify",
-                    title: "SimpleVistas.Modify",
-                    icon: "fas fa-expand",
-                    visible: game.user.isGM,
-                },
-                toggle: {
-                    name: "toggle",
-                    title: "SimpleVistas.ToggleControls",
-                    icon: "fas fa-map-pin",
-                    visible: game.user.isGM,
-                    toggle: true,
-                    active: game.settings.get(Constants.MODULE_ID, "toggleVistaControls"),
-                    onChange: (event, toggled) => game.settings.set(Constants.MODULE_ID, "toggleVistaControls", toggled)
-                }
-            },
-            activeTool: "modify",
-        };
-    }
-});
-
 Hooks.on("renderTokenConfig", renderSVPlaceableConfig);
 Hooks.on("renderTileConfig", renderSVPlaceableConfig);
 
 function renderSVPlaceableConfig(app, html) {
     const flags = foundry.utils.mergeObject(defaultFlags.placeable, app.document.flags[Constants.MODULE_ID]);
     const tab = document.createElement("a");
+    tab.classList.toggle("active", app.tabGroups.sheet === "simplevistas");
     tab.dataset.action = "tab";
     tab.dataset.group = "sheet";
     tab.dataset.tab = "simplevistas";
     tab.innerHTML = `<i class="fa-solid fa-panorama"></i> <span>Simple Vista</span>`;
     const contents = document.createElement("div");
-    contents.classList.add("tab");
+    contents.classList.add("tab", "scrollable");
+    contents.classList.toggle("active", app.tabGroups.sheet === "simplevistas");
     contents.dataset.group = "sheet";
     contents.dataset.tab = "simplevistas";
+    contents.dataset.applicationPart = "simplevistas";
     contents.innerHTML = `
         <div class="form-group">
             <label>${game.i18n.localize("SimpleVistas.Width")}</label>
@@ -122,14 +95,17 @@ function renderSVPlaceableConfig(app, html) {
 Hooks.on("renderSceneConfig", (app, html) => {
     const flags = foundry.utils.mergeObject(defaultFlags.scene, app.document.flags[Constants.MODULE_ID]);
     const tab = document.createElement("a");
+    tab.classList.toggle("active", app.tabGroups.sheet === "simplevistas");
     tab.dataset.action = "tab";
     tab.dataset.group = "sheet";
     tab.dataset.tab = "simplevistas";
     tab.innerHTML = `<i class="fa-solid fa-panorama"></i> <span>Vista</span>`;
     const contents = document.createElement("div");
-    contents.classList.add("tab");
+    contents.classList.add("tab", "scrollable");
+    contents.classList.toggle("active", app.tabGroups.sheet === "simplevistas");
     contents.dataset.group = "sheet";
     contents.dataset.tab = "simplevistas";
+    contents.dataset.applicationPart = "simplevistas";
     contents.innerHTML = `
         <div class="form-group">
             <label>${game.i18n.localize("SimpleVistas.IsVista")}</label>

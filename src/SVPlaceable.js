@@ -84,8 +84,8 @@ export function SVPlaceableMixin(Base) {
                 const newWidth = this.document.svBaseWidth / Constants.GRID_DISTANCE * this.document.parent.grid.size * newScaleFactor;
                 const newTopY = newBottomY - newHeight;
                 const adjustedYDiff = newTopY - this.document.y;
-                result.x = this.document.x + xDiff * prevScaleFactor;
-                result.y = this.document.y + adjustedYDiff * prevScaleFactor;
+                result.x = Math.round(this.document.x + xDiff * prevScaleFactor);
+                result.y = Math.round(this.document.y + adjustedYDiff * prevScaleFactor);
                 result.width = Math.round(newWidth / this.document.docSizeToPixelsMultiplier * 10000) / 10000;
                 result.height = Math.round(newHeight / this.document.docSizeToPixelsMultiplier * 10000) / 10000;
                 result.scaleFactor = newScaleFactor;
@@ -310,69 +310,59 @@ export function SVPlaceableDocumentMixin(Base) {
 
         // Override - Manages updates to the document
         async _preUpdate(changed, options, user) {
-            const originalResult = await super._preUpdate(changed, options, user);
+            const isVista = this.parent.getFlag(Constants.MODULE_ID, "isVista");
 
-            if ( user.id === game.user.id ) {
-                const isVista = this.parent.getFlag(Constants.MODULE_ID, "isVista");
-                if (isVista) {
-                    const movementInfo = options.movement?.[this.id].waypoints.at(-1);
-                    if (movementInfo) {
-                        changed.scaleFactor = movementInfo.scaleFactor;
+            if (options.movement?.[this.id] && isVista && user.id === game.user.id) {
+                const movementData = options.movement[this.id];
+                const destination = movementData.waypoints.at(-1);
+
+                if (destination.hasOwnProperty("y") && destination.y !== this.y) {
+                    const originalSize = {
+                        width: this.svBaseWidth / Constants.GRID_DISTANCE,
+                        height: this.svBaseHeight / Constants.GRID_DISTANCE
+                    };
+                    const minY = this.parent.getFlag(Constants.MODULE_ID, "maxTop") * this.parent.dimensions.sceneHeight + this.parent.dimensions.sceneY;
+                    let scaleFactor, newBottomY;
+                    if (false && destination.scaleFactor) {
+                        // REMOVED FOR NOW, TO BE REVIEWED
+                        // This happens when the base height aligns exactly with the horizon, we precalculate the scaleFactor in _prepareDragLeftDropUpdates and _getShiftedPosition
+                        scaleFactor = destination.scaleFactor;
+                        newBottomY = destination.y + originalSize.height * this.docSizeToPixelsMultiplier * scaleFactor;
+                    } else {
+                        newBottomY = destination.y + originalSize.height * this.docSizeToPixelsMultiplier * getScaleFactorByTopY(destination.y, originalSize.height, this.parent);
+                        newBottomY = Math.max(newBottomY, minY);
+                        scaleFactor = getScaleFactor(newBottomY, this.parent);
                     }
                     
-                    if (changed.hasOwnProperty("y") && changed.y != this.y || changed.hasOwnProperty("scaleFactor")) {
-                        const originalSize = {
-                            width: (changed.flags?.[Constants.MODULE_ID]?.width || this.svBaseWidth) / Constants.GRID_DISTANCE,
-                            height: (changed.flags?.[Constants.MODULE_ID]?.height || this.svBaseHeight) / Constants.GRID_DISTANCE
-                        };
-                        const minY = this.parent.getFlag(Constants.MODULE_ID, "maxTop") * this.parent.dimensions.sceneHeight + this.parent.dimensions.sceneY;
-                        let scaleFactor, newBottomY;
-                        if (changed.hasOwnProperty("scaleFactor")) {
-                            // This happens when the base height aligns exactly with the horizon, we precalculate the scaleFactor in _prepareDragLeftDropUpdates and _getShiftedPosition
-                            scaleFactor = changed.scaleFactor;
-                            newBottomY = changed.y + originalSize.height * this.docSizeToPixelsMultiplier * scaleFactor;
-                        } else {
-                            newBottomY = changed.y + originalSize.height * this.docSizeToPixelsMultiplier * getScaleFactorByTopY(changed.y, originalSize.height, this.parent);
-                            newBottomY = Math.max(newBottomY, minY);
-                            scaleFactor = getScaleFactor(newBottomY, this.parent);
-                        }
-                        
-                        changed.y = newBottomY - originalSize.height * this.docSizeToPixelsMultiplier * scaleFactor;
-                        const width = originalSize.width * (this.parent.grid.size / this.docSizeToPixelsMultiplier) * scaleFactor;
-                        const height = originalSize.height * (this.parent.grid.size / this.docSizeToPixelsMultiplier) * scaleFactor;
-                        const sort = changed.y + height * this.docSizeToPixelsMultiplier;
-                        changed.width = Math.round(width * 10000) / 10000;
-                        changed.height = Math.round(height * 10000) / 10000;
-                        changed.sort = sort;
-                    } else if (changed.flags?.[Constants.MODULE_ID]?.height) {
-                        const currentScaleFactor = getScaleFactor(this.y + this.svPixelHeight, this.parent);
-                        const currentBaseWidth = this.svPixelWidth / this.parent.grid.size * Constants.GRID_DISTANCE / currentScaleFactor;
-                        const currentBaseHeight = this.svPixelHeight / this.parent.grid.size * Constants.GRID_DISTANCE / currentScaleFactor;                        
-                        const transitionScaleFactorWidth = changed.flags?.[Constants.MODULE_ID]?.width / currentBaseWidth;
-                        const transitionScaleFactorHeight = changed.flags?.[Constants.MODULE_ID]?.height / currentBaseHeight;
-                        changed.width = transitionScaleFactorWidth * this.width;
-                        changed.height = transitionScaleFactorHeight * this.height;
-                        changed.y = this.y - (transitionScaleFactorHeight - 1) * this.svPixelHeight;
-                        changed.sort = changed.y + changed.height * this.docSizeToPixelsMultiplier;
-                    }
-                    if (changed.hasOwnProperty("elevation") && changed.elevation != this.elevation) {
-                        foundry.utils.mergeObject(changed, {texture: {anchorY: 0.5 + changed.elevation / (this.height * (this.docSizeToPixelsMultiplier / this.parent.grid.size) * Constants.GRID_DISTANCE)}});
-                    }
-                    if (changed.hasOwnProperty("x") && changed.x != this.x) {
-                        // We always store the x as if the view was centered. We remove the current offset, and each client will add their own
-                        const parallaxOffset = this.getParallaxOffset(changed.y + changed.height * this.docSizeToPixelsMultiplier);
-                        changed.x -= parallaxOffset;
-                    }
-                    if (changed.flags?.[Constants.MODULE_ID]?.width) {
-                        changed.flags[Constants.MODULE_ID].width = Math.round(changed.flags[Constants.MODULE_ID].width * 100) / 100;
-                    }
-                    if (changed.flags?.[Constants.MODULE_ID]?.height) {
-                        changed.flags[Constants.MODULE_ID].height = Math.round(changed.flags[Constants.MODULE_ID].height * 100) / 100;
-                    }
+                    destination.y = Math.round(newBottomY - originalSize.height * this.docSizeToPixelsMultiplier * scaleFactor);
+                    const width = originalSize.width * (this.parent.grid.size / this.docSizeToPixelsMultiplier) * scaleFactor;
+                    const height = originalSize.height * (this.parent.grid.size / this.docSizeToPixelsMultiplier) * scaleFactor;
+                    const sort = destination.y + height * this.docSizeToPixelsMultiplier;
+                    destination.width = Math.round(width * 10000) / 10000;
+                    destination.height = Math.round(height * 10000) / 10000;
+                    changed.sort = Math.round(sort);
+                }
+
+                if (destination.hasOwnProperty("elevation") && destination.elevation !== this.elevation) {
+                    foundry.utils.mergeObject(changed, {texture: {anchorY: 0.5 + destination.elevation / (this.height * (this.docSizeToPixelsMultiplier / this.parent.grid.size) * Constants.GRID_DISTANCE)}});
                 }
             }
-        
-            return originalResult;
+
+            const newFlagHeight = changed.flags?.[Constants.MODULE_ID]?.height;
+            const currentFlagHeight = this.flags?.[Constants.MODULE_ID]?.height;
+            if (newFlagHeight && newFlagHeight !== currentFlagHeight) {
+                const currentScaleFactor = getScaleFactor(this.y + this.svPixelHeight, this.parent);
+                const currentBaseWidth = this.svPixelWidth / this.parent.grid.size * Constants.GRID_DISTANCE / currentScaleFactor;
+                const currentBaseHeight = this.svPixelHeight / this.parent.grid.size * Constants.GRID_DISTANCE / currentScaleFactor;                        
+                const transitionScaleFactorWidth = changed.flags?.[Constants.MODULE_ID]?.width / currentBaseWidth;
+                const transitionScaleFactorHeight = newFlagHeight / currentBaseHeight;
+                changed.width = transitionScaleFactorWidth * this.width;
+                changed.height = transitionScaleFactorHeight * this.height;
+                changed.y = Math.round(this.y - (transitionScaleFactorHeight - 1) * this.svPixelHeight);
+                changed.sort = Math.round(changed.y + changed.height * this.docSizeToPixelsMultiplier);
+            }
+
+            return super._preUpdate(changed, options, user);
         }
 
         // Disable auto-rotation because it never makes sense in our scenes
