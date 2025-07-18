@@ -57,6 +57,19 @@ Hooks.on("init", () => {
             layer.controls.visible = layer.interactiveChildren = layer.active || value;
         }
     });
+
+    game.settings.register(Constants.MODULE_ID, "tokenSource", {
+        name: "SimpleVistas.Settings.TokenImageSource",
+        hint: "SimpleVistas.Settings.TokenImageSource_Hint",
+        scope: "world",
+        config: true,
+        type: String,
+        choices: {
+            "token": "Token Image",
+            "portrait": "Actor Portrait"
+        },
+        default: "portrait"
+    });
 });
 
 Hooks.on("renderTokenConfig", renderSVPlaceableConfig);

@@ -297,7 +297,7 @@ export function SVPlaceableDocumentMixin(Base) {
                     }
                     
                     // For tokens, use the portrait image
-                    if (this.actor?.img) {
+                    if (this.actor?.img && game.settings.get(Constants.MODULE_ID, "tokenSource") === "portrait") {
                         updateData.texture = { src: this.actor.img };
                     }
                     this.updateSource(updateData);

@@ -1,6 +1,6 @@
 {
   "name": "simple-vistas",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A Foundry VTT module inspired by [Ember](https://foundryvtt.com/ember/)'s vista system.",
   "main": "index.js",
   "type": "module",

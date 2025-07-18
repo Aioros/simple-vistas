@@ -19,5 +19,8 @@
     "SimpleVistas.Modify": "Modify Perspective",
     "SimpleVistas.ToggleControls": "Toggle Perspective Display",
 
+    "SimpleVistas.Settings.TokenImageSource": "Token Image Source",
+    "SimpleVistas.Settings.TokenImageSource_Hint": "Tokens in Vista scenes can use either the actor portrait image or the regular token texture",
+
     "SimpleVistas.Mirror": "Mirror"
 }
