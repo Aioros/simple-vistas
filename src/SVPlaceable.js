@@ -9,7 +9,7 @@ export function SVPlaceableMixin(Base) {
         _refreshState() {
             super._refreshState();
             const isVista = this.scene.getFlag(Constants.MODULE_ID, "isVista");
-            if (isVista && this instanceof foundry.canvas.placeables.Tile) {
+            if (isVista && this.mesh && this instanceof foundry.canvas.placeables.Tile) {
                 this.mesh.sortLayer = foundry.canvas.groups.PrimaryCanvasGroup.SORT_LAYERS.TOKENS;
             }
         }
