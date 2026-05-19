@@ -149,7 +149,7 @@ export class SVControl extends PIXI.Container {
     }
 
     draw(options = {}) {
-        if (canvas.scene.getFlag(Constants.MODULE_ID, "isVista")) {
+        if (canvas.scene?.getFlag(Constants.MODULE_ID, "isVista")) {
             this.drawHorizons();
             this.drawRays();
         }

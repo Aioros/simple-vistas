@@ -76,82 +76,86 @@ Hooks.on("renderTokenConfig", renderSVPlaceableConfig);
 Hooks.on("renderTileConfig", renderSVPlaceableConfig);
 
 function renderSVPlaceableConfig(app, html) {
-    const flags = foundry.utils.mergeObject(defaultFlags.placeable, app.document.flags[Constants.MODULE_ID]);
-    const tab = document.createElement("a");
-    tab.classList.toggle("active", app.tabGroups.sheet === "simplevistas");
-    tab.dataset.action = "tab";
-    tab.dataset.group = "sheet";
-    tab.dataset.tab = "simplevistas";
-    tab.innerHTML = `<i class="fa-solid fa-panorama"></i> <span>Simple Vista</span>`;
-    const contents = document.createElement("div");
-    contents.classList.add("tab", "scrollable");
-    contents.classList.toggle("active", app.tabGroups.sheet === "simplevistas");
-    contents.dataset.group = "sheet";
-    contents.dataset.tab = "simplevistas";
-    contents.dataset.applicationPart = "simplevistas";
-    contents.innerHTML = `
-        <div class="form-group">
-            <label>${game.i18n.localize("SimpleVistas.Width")}</label>
-            <input type="number" name="flags.${Constants.MODULE_ID}.width" data-dtype="Number" min="0" value="${flags.width || ""}">
-            <p class="notes">${game.i18n.localize("SimpleVistas.Width_Hint")}</p>
-        </div>
-        <div class="form-group">
-            <label>${game.i18n.localize("SimpleVistas.Height")}</label>
-            <input type="number" name="flags.${Constants.MODULE_ID}.height" data-dtype="Number" min="0" value="${flags.height || ""}">
-            <p class="notes">${game.i18n.localize("SimpleVistas.Height_Hint")}</p>
-        </div>
-    `;
-    html.querySelector("nav.sheet-tabs").appendChild(tab);
-    html.querySelector(".tab:last-of-type").after(contents);
+    if (!html.querySelector(`[data-tab="simplevistas"]`)) {
+        const flags = foundry.utils.mergeObject(defaultFlags.placeable, app.document.flags[Constants.MODULE_ID]);
+        const tab = document.createElement("a");
+        tab.classList.toggle("active", app.tabGroups.sheet === "simplevistas");
+        tab.dataset.action = "tab";
+        tab.dataset.group = "sheet";
+        tab.dataset.tab = "simplevistas";
+        tab.innerHTML = `<i class="fa-solid fa-panorama"></i> <span>Simple Vista</span>`;
+        const contents = document.createElement("div");
+        contents.classList.add("tab", "scrollable");
+        contents.classList.toggle("active", app.tabGroups.sheet === "simplevistas");
+        contents.dataset.group = "sheet";
+        contents.dataset.tab = "simplevistas";
+        contents.dataset.applicationPart = "simplevistas";
+        contents.innerHTML = `
+            <div class="form-group">
+                <label>${game.i18n.localize("SimpleVistas.Width")}</label>
+                <input type="number" name="flags.${Constants.MODULE_ID}.width" data-dtype="Number" min="0" value="${flags.width || ""}">
+                <p class="notes">${game.i18n.localize("SimpleVistas.Width_Hint")}</p>
+            </div>
+            <div class="form-group">
+                <label>${game.i18n.localize("SimpleVistas.Height")}</label>
+                <input type="number" name="flags.${Constants.MODULE_ID}.height" data-dtype="Number" min="0" value="${flags.height || ""}">
+                <p class="notes">${game.i18n.localize("SimpleVistas.Height_Hint")}</p>
+            </div>
+        `;
+        html.querySelector("nav.sheet-tabs").appendChild(tab);
+        html.querySelector(".tab:last-of-type").after(contents);
+    }
 }
 
 Hooks.on("renderSceneConfig", (app, html) => {
-    const flags = foundry.utils.mergeObject(defaultFlags.scene, app.document.flags[Constants.MODULE_ID]);
-    const tab = document.createElement("a");
-    tab.classList.toggle("active", app.tabGroups.sheet === "simplevistas");
-    tab.dataset.action = "tab";
-    tab.dataset.group = "sheet";
-    tab.dataset.tab = "simplevistas";
-    tab.innerHTML = `<i class="fa-solid fa-panorama"></i> <span>Vista</span>`;
-    const contents = document.createElement("div");
-    contents.classList.add("tab", "scrollable");
-    contents.classList.toggle("active", app.tabGroups.sheet === "simplevistas");
-    contents.dataset.group = "sheet";
-    contents.dataset.tab = "simplevistas";
-    contents.dataset.applicationPart = "simplevistas";
-    contents.innerHTML = `
-        <div class="form-group">
-            <label>${game.i18n.localize("SimpleVistas.IsVista")}</label>
-            <input type="checkbox" name="flags.${Constants.MODULE_ID}.isVista" data-dtype="Boolean" ${flags.isVista ? "checked" : ""}>
-            <p class="notes">${game.i18n.localize("SimpleVistas.IsVista_Hint")}</p>
-        </div>
-        <div class="form-group">
-            <label>${game.i18n.localize("SimpleVistas.ForegroundWidth")}</label>
-            <input type="number" name="flags.${Constants.MODULE_ID}.foregroundWidth" data-dtype="Number" value="${flags.foregroundWidth || defaultFlags.scene.foregroundWidth}">
-            <p class="notes">${game.i18n.localize("SimpleVistas.ForegroundWidth_Hint")}</p>
-        </div>
-        <div class="form-group">
-            <label>${game.i18n.localize("SimpleVistas.HorizonTop")}</label>
-            <input type="number" name="flags.${Constants.MODULE_ID}.horizonTop" data-dtype="Number" min="0" max="1" step="0.01" value="${flags.horizonTop || defaultFlags.scene.horizonTop}">
-            <p class="notes">${game.i18n.localize("SimpleVistas.HorizonTop_Hint")}</p>
-        </div>
-        <div class="form-group">
-            <label>${game.i18n.localize("SimpleVistas.MaxTop")}</label>
-            <input type="number" name="flags.${Constants.MODULE_ID}.maxTop" data-dtype="Number" min="0" max="1" step="0.01" value="${flags.maxTop || defaultFlags.scene.maxTop}">
-            <p class="notes">${game.i18n.localize("SimpleVistas.MaxTop_Hint")}</p>
-        </div>
-        <div class="form-group">
-            <label>${game.i18n.localize("SimpleVistas.ParallaxStrength")}</label>
-            <div class="form-fields">
-                <range-picker name="flags.${Constants.MODULE_ID}.parallax" value="${flags.parallax || defaultFlags.scene.parallax}" min="0" max="1" step="0.05">
-                    <input type="range" min="0" max="1" step="0.05"><input type="number" min="0" max="1" step="0.05">
-                </range-picker>
+    if (!html.querySelector(`[data-tab="simplevistas"]`)) {
+        const flags = foundry.utils.mergeObject(defaultFlags.scene, app.document.flags[Constants.MODULE_ID]);
+        const tab = document.createElement("a");
+        tab.classList.toggle("active", app.tabGroups.sheet === "simplevistas");
+        tab.dataset.action = "tab";
+        tab.dataset.group = "sheet";
+        tab.dataset.tab = "simplevistas";
+        tab.innerHTML = `<i class="fa-solid fa-panorama"></i> <span>Vista</span>`;
+        const contents = document.createElement("div");
+        contents.classList.add("tab", "scrollable");
+        contents.classList.toggle("active", app.tabGroups.sheet === "simplevistas");
+        contents.dataset.group = "sheet";
+        contents.dataset.tab = "simplevistas";
+        contents.dataset.applicationPart = "simplevistas";
+        contents.innerHTML = `
+            <div class="form-group">
+                <label>${game.i18n.localize("SimpleVistas.IsVista")}</label>
+                <input type="checkbox" name="flags.${Constants.MODULE_ID}.isVista" data-dtype="Boolean" ${flags.isVista ? "checked" : ""}>
+                <p class="notes">${game.i18n.localize("SimpleVistas.IsVista_Hint")}</p>
             </div>
-            <p class="notes">${game.i18n.localize("SimpleVistas.ParallaxStrength_Hint")}</p>
-        </div>
-    `;
-    html.querySelector("nav.sheet-tabs").appendChild(tab);
-    html.querySelector(".tab:last-of-type").after(contents);
+            <div class="form-group">
+                <label>${game.i18n.localize("SimpleVistas.ForegroundWidth")}</label>
+                <input type="number" name="flags.${Constants.MODULE_ID}.foregroundWidth" data-dtype="Number" value="${flags.foregroundWidth || defaultFlags.scene.foregroundWidth}">
+                <p class="notes">${game.i18n.localize("SimpleVistas.ForegroundWidth_Hint")}</p>
+            </div>
+            <div class="form-group">
+                <label>${game.i18n.localize("SimpleVistas.HorizonTop")}</label>
+                <input type="number" name="flags.${Constants.MODULE_ID}.horizonTop" data-dtype="Number" min="0" max="1" step="0.01" value="${flags.horizonTop || defaultFlags.scene.horizonTop}">
+                <p class="notes">${game.i18n.localize("SimpleVistas.HorizonTop_Hint")}</p>
+            </div>
+            <div class="form-group">
+                <label>${game.i18n.localize("SimpleVistas.MaxTop")}</label>
+                <input type="number" name="flags.${Constants.MODULE_ID}.maxTop" data-dtype="Number" min="0" max="1" step="0.01" value="${flags.maxTop || defaultFlags.scene.maxTop}">
+                <p class="notes">${game.i18n.localize("SimpleVistas.MaxTop_Hint")}</p>
+            </div>
+            <div class="form-group">
+                <label>${game.i18n.localize("SimpleVistas.ParallaxStrength")}</label>
+                <div class="form-fields">
+                    <range-picker name="flags.${Constants.MODULE_ID}.parallax" value="${flags.parallax || defaultFlags.scene.parallax}" min="0" max="1" step="0.05">
+                        <input type="range" min="0" max="1" step="0.05"><input type="number" min="0" max="1" step="0.05">
+                    </range-picker>
+                </div>
+                <p class="notes">${game.i18n.localize("SimpleVistas.ParallaxStrength_Hint")}</p>
+            </div>
+        `;
+        html.querySelector("nav.sheet-tabs").appendChild(tab);
+        html.querySelector(".tab:last-of-type").after(contents);
+    }
 });
 
 Hooks.on("preUpdateScene", (scene, data, options) => {

@@ -286,6 +286,7 @@ export function SVPlaceableDocumentMixin(Base) {
                         y: data.y - height * this.docSizeToPixelsMultiplier,
                         width: width,
                         height: height,
+                        ring: {enabled: false},
                         flags: {
                             [Constants.MODULE_ID]: { originalWidth: originalWidth, originalHeight: originalHeight }
                         },
